@@ -1,0 +1,31 @@
+# --- Original game data (copyrighted) ---
+# Ultima VI assets are the property of Origin/EA. You must supply your own
+# copy of the game files (DOS U6) in the U6/ directory to build.
+U6/
+
+# --- Built ROM (contains copyrighted game assets) ---
+*.sfc
+*.sym
+
+# --- Generated assets (produced by tools/convert_u6.py at build time) ---
+src/ultima_tiles.pic
+src/ultima_tiles.pal
+src/ultima_tilemap.bin
+src/chunks_a.bin
+src/chunks_b.bin
+src/tileflag.bin
+src/avatar.pic
+src/avatar.pal
+gfx/
+
+# --- Build artifacts ---
+*.obj
+*.ps
+src/main.asm
+hdr.asm.tmp
+__pycache__/
+*.pyc
+
+# --- Misc ---
+.vscode/
+*.tmp

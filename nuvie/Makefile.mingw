@@ -1,0 +1,234 @@
+# nuvie makefile for use in Windows with mingw using GCC 3.2 and msys shell
+# It may require a little tweaking. (paths)
+
+# Where is Ultima 6 installed
+U6PATH=C:/Ultima6
+
+# Base of the nuvie source
+SRC=.
+
+### Modify these paths
+SDL_CFLAGS=-I$(SRC)/sdl/include
+
+ifdef SDL2
+	SDL_DLL=SDL2.dll
+	SDL_LIBS=-L$(SRC)/sdl/lib -lSDL2main -lSDL2
+else
+	SDL_DLL=SDL.dll
+	SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
+endif
+
+CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DHAVE_JOYSTICK_SUPPORT \
+	-I$(SRC) -I$(SRC)/actors \
+	-I$(SRC)/conf -I$(SRC)/files -I$(SRC)/fonts -I$(SRC)/GUI \
+	-I$(SRC)/keybinding -I$(SRC)/lua -I$(SRC)/menus -I$(SRC)/misc \
+	-I$(SRC)/pathfinder -I$(SRC)/portraits -I$(SRC)/save -I$(SRC)/screen \
+	-I$(SRC)/script -I$(SRC)/sound -I$(SRC)/sound/adplug -I$(SRC)/sound/mixer \
+	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/views $(SDL_CFLAGS)
+
+CXXFLAGS=-g
+CC=gcc
+
+LFLAGS=-static-libgcc -static-libstdc++
+LIBS=-lmingw32 $(SDL_LIBS)
+
+all: nuvie.exe
+
+# Makefile.common defines nuvie_SOURCES
+include Makefile.common
+
+NUVIE_CPPs = $(filter %.cpp,$(nuvie_SOURCES))
+NUVIE_OBJS1 = $(NUVIE_CPPs:.cpp=.o)
+
+NUVIE_Cs = $(filter %.c,$(nuvie_SOURCES))
+NUVIE_OBJS2 = $(NUVIE_Cs:.c=.o)
+
+builds/mingw/resource.o: builds/mingw/resource.rc builds/mingw/nuvie.ico
+	windres builds/mingw/resource.rc -O coff -o builds/mingw/resource.o
+
+nuvie.exe: $(NUVIE_OBJS1) $(NUVIE_OBJS2) builds/mingw/resource.o
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS) -mwindows
+
+# tools/Makefile.common defines u6decomp_SOURCES
+include tools/Makefile.common
+
+U6DECOMP_Cs = $(filter %.c,$(u6decomp_SOURCES))
+U6DECOMP_OBJS=$(U6DECOMP_Cs:%.c=tools/%.o)
+
+u6decomp.exe: $(U6DECOMP_OBJS)
+	$(CC) $(LFLAGS) -o $@ $+
+
+UNPACKCONV_CPPs = $(filter %.cpp,$(unpack_conv_SOURCES))
+UNPACKCONV_OBJS = $(UNPACKCONV_CPPs:%.cpp=tools/%.o)
+
+unpack_conv.exe: $(UNPACKCONV_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+UNPACKFONT_CPPs = $(filter %.cpp,$(unpack_font_SOURCES))
+UNPACKFONT_OBJS = $(UNPACKFONT_CPPs:%.cpp=tools/%.o)
+
+unpack_font.exe: $(UNPACKFONT_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+PACKFONT_CPPs = $(filter %.cpp,$(pack_font_SOURCES))
+PACKFONT_OBJS = $(PACKFONT_CPPs:%.cpp=tools/%.o)
+
+pack_font.exe: $(PACKFONT_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+UNPACKLZC_CPPs = $(filter %.cpp,$(unpack_lzc_SOURCES))
+UNPACKLZC_OBJS = $(UNPACKLZC_CPPs:%.cpp=tools/%.o)
+
+unpack_lzc.exe: $(UNPACKLZC_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+PACKLZC_CPPs = $(filter %.cpp,$(pack_lzc_SOURCES))
+PACKLZC_OBJS = $(PACKLZC_CPPs:%.cpp=tools/%.o)
+
+pack_lzc.exe: $(PACKLZC_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+UNPACKMAPTILES_CPPs = $(filter %.cpp,$(unpack_maptiles_SOURCES))
+UNPACKMAPTILES_OBJS = $(UNPACKMAPTILES_CPPs:%.cpp=tools/%.o)
+
+unpack_maptiles.exe: $(UNPACKMAPTILES_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+UNPACKPORTRAITS_CPPs = $(filter %.cpp,$(unpack_portraits_SOURCES))
+UNPACKPORTRAITS_OBJS = $(UNPACKPORTRAITS_CPPs:%.cpp=tools/%.o)
+
+unpack_portraits.exe: $(UNPACKPORTRAITS_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+UNPACKTALK_CPPs = $(filter %.cpp,$(unpack_talk_SOURCES))
+UNPACKTALK_OBJS = $(UNPACKTALK_CPPs:%.cpp=tools/%.o)
+
+unpack_talk.exe: $(UNPACKTALK_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+include tools/FMTownsU6/Makefile.common
+
+UNPACK_OBJS = $(unpack_OBJS:%=tools/FMTownsU6/%) Debug.o
+
+unpack.exe: $(UNPACK_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+nvconfig_rc.o: win32/nvconfig.rc
+	windres --include-dir win32 win32/nvconfig.rc nvconfig_rc.o
+
+DLL_OBJS = conf/Configuration.o conf/XMLTree.o conf/XMLNode.o Debug.o misc/U6misc.o
+nvconfig.dll: win32/nvconfig.def nvconfig_rc.o win32/nvconfig.o $(DLL_OBJS)
+	dllwrap --def win32/nvconfig.def -o $@ nvconfig_rc.o win32/nvconfig.o $(DLL_OBJS) -static -lstdc++
+
+clean:
+	rm -f $(NUVIE_OBJS1) $(NUVIE_OBJS2) builds/mingw/resource.o nuvie.exe \
+	$(U6DECOMP_OBJS) u6decomp.exe $(UNPACKCONV_OBJS) unpack_conv.exe $(UNPACKFONT_OBJS) unpack_font.exe \
+	$(PACKFONT_OBJS) pack_font.exe \
+	$(UNPACKLZC_OBJS) unpack_lzc.exe $(PACKLZC_OBJS) pack_lzc.exe \
+	$(UNPACKMAPTILES_OBJS) unpack_maptiles.exe $(UNPACKPORTRAITS_OBJS) unpack_portraits.exe \
+	$(UNPACKTALK_OBJS) unpack_talk.exe $(UNPACK_OBJS) unpack.exe \
+	nvconfig.dll nvconfig_rc.o win32/nvconfig.o
+
+install: all copy_scripts
+	strip nuvie.exe -o $(U6PATH)/nuvie.exe
+	mkdir -p $(U6PATH)/data/images
+	mkdir -p $(U6PATH)/data/images/tiles
+	mkdir -p $(U6PATH)/data/images/tiles/U6
+	mkdir -p $(U6PATH)/data/images/gumps
+	mkdir -p $(U6PATH)/data/images/gumps/celestial
+	mkdir -p $(U6PATH)/data/images/gumps/fonts
+	mkdir -p $(U6PATH)/data/images/gumps/sign
+	mkdir -p $(U6PATH)/data/images/gumps/container
+	mkdir -p $(U6PATH)/data/images/gumps/doll
+	mkdir -p $(U6PATH)/data/images/gumps/doll/orig_style
+	mkdir -p $(U6PATH)/data/images/gumps/mapeditor
+	mkdir -p $(U6PATH)/data/images/gumps/spellbook
+	mkdir -p $(U6PATH)/data/maps
+	mkdir -p $(U6PATH)/data/maps/u6
+	cp data/images/*.bmp $(U6PATH)/data/images
+	cp data/images/tiles/U6/*.bmp $(U6PATH)/data/images/tiles/U6
+	cp data/images/gumps/*.bmp $(U6PATH)/data/images/gumps
+	cp data/images/gumps/celestial/*.bmp $(U6PATH)/data/images/gumps/celestial
+	cp data/images/gumps/fonts/*.bmp $(U6PATH)/data/images/gumps/fonts
+	cp data/images/gumps/fonts/*.dat $(U6PATH)/data/images/gumps/fonts
+	cp data/images/gumps/sign/*.bmp $(U6PATH)/data/images/gumps/sign
+	cp data/images/gumps/sign/*.dat $(U6PATH)/data/images/gumps/sign
+	cp data/images/gumps/container/*.bmp $(U6PATH)/data/images/gumps/container
+	cp data/images/gumps/doll/*.bmp $(U6PATH)/data/images/gumps/doll
+	cp data/images/gumps/doll/orig_style/*.bmp $(U6PATH)/data/images/gumps/doll/orig_style
+	cp data/images/gumps/mapeditor/*.bmp $(U6PATH)/data/images/gumps/mapeditor
+	cp data/images/gumps/spellbook/*.bmp $(U6PATH)/data/images/gumps/spellbook
+	cp data/maps/u6/*.dat $(U6PATH)/data/maps/u6
+	cp data/*.bmp $(U6PATH)/data
+	cp data/defaultkeys.txt $(U6PATH)/data
+	cp data/u6keys.txt $(U6PATH)/data
+	cp data/mdkeys.txt $(U6PATH)/data
+	cp data/sekeys.txt $(U6PATH)/data
+
+copy_scripts:
+	mkdir -p $(U6PATH)
+	mkdir -p $(U6PATH)/data
+	mkdir -p $(U6PATH)/data/scripts
+	mkdir -p $(U6PATH)/data/scripts/common
+	mkdir -p $(U6PATH)/data/scripts/md
+	mkdir -p $(U6PATH)/data/scripts/md/lang
+	mkdir -p $(U6PATH)/data/scripts/md/lang/en
+	mkdir -p $(U6PATH)/data/scripts/md/lang/it
+	mkdir -p $(U6PATH)/data/scripts/se
+	mkdir -p $(U6PATH)/data/scripts/se/lang
+	mkdir -p $(U6PATH)/data/scripts/se/lang/en
+	mkdir -p $(U6PATH)/data/scripts/u6
+	mkdir -p $(U6PATH)/data/scripts/u6/lang
+	mkdir -p $(U6PATH)/data/scripts/u6/lang/en
+	mkdir -p $(U6PATH)/data/scripts/u6/magic
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_01
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_02
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_03
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_04
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_05
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_06
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_07
+	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_08
+	cp data/scripts/u6/magic/circle_01/*.lua $(U6PATH)/data/scripts/u6/magic/circle_01
+	cp data/scripts/u6/magic/circle_02/*.lua $(U6PATH)/data/scripts/u6/magic/circle_02
+	cp data/scripts/u6/magic/circle_03/*.lua $(U6PATH)/data/scripts/u6/magic/circle_03
+	cp data/scripts/u6/magic/circle_04/*.lua $(U6PATH)/data/scripts/u6/magic/circle_04
+	cp data/scripts/u6/magic/circle_05/*.lua $(U6PATH)/data/scripts/u6/magic/circle_05
+	cp data/scripts/u6/magic/circle_06/*.lua $(U6PATH)/data/scripts/u6/magic/circle_06
+	cp data/scripts/u6/magic/circle_07/*.lua $(U6PATH)/data/scripts/u6/magic/circle_07
+	cp data/scripts/u6/magic/circle_08/*.lua $(U6PATH)/data/scripts/u6/magic/circle_08
+	cp data/scripts/common/*.lua $(U6PATH)/data/scripts/common
+	cp data/scripts/md/*.lua $(U6PATH)/data/scripts/md
+	cp data/scripts/md/lang/en/*.lua $(U6PATH)/data/scripts/md/lang/en
+	cp data/scripts/md/lang/it/*.lua $(U6PATH)/data/scripts/md/lang/it
+	cp data/scripts/se/*.lua $(U6PATH)/data/scripts/se
+	cp data/scripts/se/lang/en/*.lua $(U6PATH)/data/scripts/se/lang/en
+	cp data/scripts/u6/*.lua $(U6PATH)/data/scripts/u6
+	cp data/scripts/u6/lang/en/*.lua $(U6PATH)/data/scripts/u6/lang/en
+
+tools: u6decomp.exe unpack.exe unpack_conv.exe unpack_font.exe pack_font.exe unpack_lzc.exe pack_lzc.exe unpack_maptiles.exe unpack_portraits.exe unpack_talk.exe
+	mkdir -p $(U6PATH)
+	mkdir -p $(U6PATH)/tools
+	strip u6decomp.exe -o $(U6PATH)/tools/u6decomp.exe
+	strip unpack.exe -o $(U6PATH)/tools/unpack.exe
+	strip unpack_conv.exe -o $(U6PATH)/tools/unpack_conv.exe
+	strip unpack_font.exe -o $(U6PATH)/tools/unpack_font.exe
+	strip pack_font.exe -o $(U6PATH)/tools/pack_font.exe
+	strip unpack_lzc.exe -o $(U6PATH)/tools/unpack_lzc.exe
+	strip pack_lzc.exe -o $(U6PATH)/tools/pack_lzc.exe
+	strip unpack_maptiles.exe -o $(U6PATH)/tools/unpack_maptiles.exe
+	strip unpack_portraits.exe -o $(U6PATH)/tools/unpack_portraits.exe
+	strip unpack_talk.exe -o $(U6PATH)/tools/unpack_talk.exe
+
+dist: install tools nvconfig.dll
+	cp nuvie.cfg.sample $(U6PATH)
+	cp AUTHORS $(U6PATH)/AUTHORS.txt
+	cp ChangeLog $(U6PATH)/ChangeLog.txt
+	cp COPYING $(U6PATH)/COPYING.txt
+	cp README.md $(U6PATH)/README.txt
+	cp SDL/README-SDL.txt $(U6PATH)
+	cp SDL/lib/$(SDL_DLL) $(U6PATH)
+	cp SDL/lib/$(SDL_DLL) $(U6PATH)/tools
+	cp win32/Nuvie.iss $(U6PATH)
+	u2d $(U6PATH)/*.txt
+	strip nvconfig.dll -o $(U6PATH)/nvconfig.dll

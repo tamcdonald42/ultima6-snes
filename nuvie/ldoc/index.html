@@ -1,0 +1,5277 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Nuvie Lua Scripting API</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Nuvie</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Object">Object</a></li>
+<li><a href="#player">player</a></li>
+<li><a href="#party">party</a></li>
+<li><a href="#map">map</a></li>
+<li><a href="#effects">effects</a></li>
+<li><a href="#time">time</a></li>
+<li><a href="#io">io</a></li>
+<li><a href="#mapwindow">mapwindow</a></li>
+<li><a href="#UI">UI</a></li>
+<li><a href="#Actor">Actor</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><strong>script</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>script</code></h1>
+<p>
+</p>
+<p>
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#clear_scroll">clear_scroll ()</a></td>
+	<td class="summary">Clear the message scroll</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#print">print (string)</a></td>
+	<td class="summary">Print a string to the message scroll</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#display_prompt">display_prompt (string)</a></td>
+	<td class="summary">Print the prompt string to the message scroll</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#nuvie_load">nuvie_load (path)</a></td>
+	<td class="summary">Load a lua script from the data/scripts/ directory</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#config_get_boolean_value">config_get_boolean_value (config_key)</a></td>
+	<td class="summary">Get a boolean value for a given key from the config file</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#config_get_game_type">config_get_game_type ()</a></td>
+	<td class="summary">Get the currently running game type</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#config_get_language">config_get_language ()</a></td>
+	<td class="summary">Get the currently selected language</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#objlist_seek">objlist_seek (position)</a></td>
+	<td class="summary">Seek to a given position in the objlist data</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#objlist_read1">objlist_read1 ()</a></td>
+	<td class="summary">Read a 1 byte integer number from the current position in the objlist data.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#objlist_write1">objlist_write1 (value)</a></td>
+	<td class="summary">Overwrite objlist data at the current position with a 1 byte unsigned number.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#objlist_read2">objlist_read2 ()</a></td>
+	<td class="summary">Read a 2 byte integer number from the current position in the objlist data.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#objlist_write2">objlist_write2 (value)</a></td>
+	<td class="summary">Overwrite objlist data at the current position with a 2 byte unsigned number.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#game_get_ui_style">game_get_ui_style ()</a></td>
+	<td class="summary">Get the currently selected UI style</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_export_tmx_files">map_export_tmx_files ()</a></td>
+	<td class="summary">export map to Tiled TMX files.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#tileset_export">tileset_export ([overWriteFile=false])</a></td>
+	<td class="summary">export tileset to a bmp file &lsquo;data/images/tiles/nn/custom_tiles.bmp&rsquo; in the current savegame directory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#tile_get_flag">tile_get_flag (tile_number, flag_set, bit_number)</a></td>
+	<td class="summary">get a tile flag for a given tile number</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#tile_get_description">tile_get_description (tile_number)</a></td>
+	<td class="summary">get the description for a given tile number</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#anim_get_number_of_entries">anim_get_number_of_entries ()</a></td>
+	<td class="summary">get the number of tile animations</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#anim_get_tile">anim_get_tile (anim_index)</a></td>
+	<td class="summary">get the tile number for a given animation number</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#anim_set_first_frame">anim_set_first_frame (anim_index, anim_start_tile)</a></td>
+	<td class="summary">set the starting animation frame for a given animation number</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#anim_get_first_frame">anim_get_first_frame (anim_index)</a></td>
+	<td class="summary">get the starting animation frame for a given animation number</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#anim_play">anim_play (anim_index)</a></td>
+	<td class="summary">start playing animation</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#anim_stop">anim_stop (anim_index)</a></td>
+	<td class="summary">stop playing animation</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#play_end_sequence">play_end_sequence ()</a></td>
+	<td class="summary">play the game end sequence then quit.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#play_sfx">play_sfx (sfx_id[, async_playback=false])</a></td>
+	<td class="summary">play a sound effect</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#wind_set_dir">wind_set_dir (direction)</a></td>
+	<td class="summary">Set the current wind direction (U6).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#wind_get_dir">wind_get_dir ()</a></td>
+	<td class="summary">Get the current wind direction (U6).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#is_god_mode_enabled">is_god_mode_enabled ()</a></td>
+	<td class="summary">Is the god mode cheat currently active?</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#set_armageddon">set_armageddon (new_value)</a></td>
+	<td class="summary">Set armageddon flag</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#load_text_from_lzc">load_text_from_lzc (filename, index)</a></td>
+	<td class="summary">Loads text from a given LZC file.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Obj">Obj</a></td>
+	<td class="summary">An in-game object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MapCoord">MapCoord</a></td>
+	<td class="summary">A map coordinate</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Schedule">Schedule</a></td>
+	<td class="summary">An actor schedule entry</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor">Actor</a></td>
+	<td class="summary">An Actor object</td>
+	</tr>
+</table>
+<h2><a href="#Object">Object</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Obj.new">Obj.new ([obj[, obj_n[, frame_n[, quality[, qty[, x[, y[, z]]]]]]]])</a></td>
+	<td class="summary">Create a new Obj.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.moveToMap">Obj.moveToMap (obj[, location])</a></td>
+	<td class="summary">Move an object to the map.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.moveToInv">Obj.moveToInv (obj, actor_num)</a></td>
+	<td class="summary">Move an object into an Actor&rsquo;s inventory</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.moveToCont">Obj.moveToCont (obj, container)</a></td>
+	<td class="summary">Move an object into a container</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.removeFromCont">Obj.removeFromCont (obj)</a></td>
+	<td class="summary">Remove an object from its container.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.use">Obj.use (obj)</a></td>
+	<td class="summary">Call the old C++ usecode logic for a given object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.removeFromEngine">Obj.removeFromEngine (obj)</a></td>
+	<td class="summary">Remove an object from the game engine.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#usecode_look">usecode_look (object)</a></td>
+	<td class="summary">Call the C++ usecode look function for a given Obj</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#find_obj">find_obj (z, obj_n[, frame_n[, quality]])</a></td>
+	<td class="summary">Iterate through all objects of a specific type on a given map level.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#find_obj_from_area">find_obj_from_area (location, width, height)</a></td>
+	<td class="summary">Iterate through all objects within a given area.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#objs_at_loc">objs_at_loc (location)</a></td>
+	<td class="summary">Iterate through objects at a given map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#find_volcano_near_player">find_volcano_near_player (location)</a></td>
+	<td class="summary">Find a volcano object near the player.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#container_objs">container_objs (container[, is_recursive=false])</a></td>
+	<td class="summary">Iterate through objects in a container.</td>
+	</tr>
+</table>
+<h2><a href="#player">player</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#player_get_name">player_get_name ()</a></td>
+	<td class="summary">Get the player name</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_get_gender">player_get_gender ()</a></td>
+	<td class="summary">Get the gender of the player</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_get_location">player_get_location ()</a></td>
+	<td class="summary">Get the location of the player</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_get_karma">player_get_karma ()</a></td>
+	<td class="summary">Get the player&rsquo;s karma value (U6)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_set_karma">player_set_karma (value)</a></td>
+	<td class="summary">Set the karma value for the player (U6)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_dec_alcohol">player_dec_alcohol (value)</a></td>
+	<td class="summary">Decrement the player&rsquo;s alcohol counter (U6)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_move">player_move (location, teleport)</a></td>
+	<td class="summary">Move player to given map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_set_actor">player_set_actor (actor)</a></td>
+	<td class="summary">Make the given actor the player controlled actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_is_in_solo_mode">player_is_in_solo_mode ()</a></td>
+	<td class="summary">Check if the player is currently in solo mode</td>
+	</tr>
+</table>
+<h2><a href="#party">party</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#party_is_in_combat_mode">party_is_in_combat_mode ()</a></td>
+	<td class="summary">Check to see if the party is currently in combat mode</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_set_combat_mode">party_set_combat_mode (value)</a></td>
+	<td class="summary">Toggle combat mode</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_set_party_mode">party_set_party_mode ()</a></td>
+	<td class="summary">Set party mode.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_move">party_move (location)</a></td>
+	<td class="summary">Move party to a given map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_use_entrance">party_use_entrance (entrance, exit)</a></td>
+	<td class="summary">Walk party members to an entrance and teleport them to the exit on the other side.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_get_size">party_get_size ()</a></td>
+	<td class="summary">Returns the number of members in the party</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_get_member">party_get_member (member_num)</a></td>
+	<td class="summary">Get the Actor object for a given party member</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_update_leader">party_update_leader ()</a></td>
+	<td class="summary">Get the current party leader and update player</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_resurrect_dead_members">party_resurrect_dead_members ()</a></td>
+	<td class="summary">Resurrect dead party members</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_exit_vehicle">party_exit_vehicle (location)</a></td>
+	<td class="summary">Exit party members from vehicle</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_dismount_from_horses">party_dismount_from_horses ()</a></td>
+	<td class="summary">Dismount all party members from their horses (U6)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_set_in_vehicle">party_set_in_vehicle (value)</a></td>
+	<td class="summary">Toggle party vehicle mode</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_show_all">party_show_all ()</a></td>
+	<td class="summary">Show all party members on the map.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_hide_all">party_hide_all ()</a></td>
+	<td class="summary">Hide all party members on the map.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_members">party_members ()</a></td>
+	<td class="summary">Iterate through party members.</td>
+	</tr>
+</table>
+<h2><a href="#map">map</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#map_get_obj">map_get_obj (location[, obj_n[, inc_multi_tile_objs=false]])</a></td>
+	<td class="summary">Get an object from the map</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_remove_obj">map_remove_obj (location[, obj_n])</a></td>
+	<td class="summary">Remove an object from the map.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_can_put">map_can_put (location)</a></td>
+	<td class="summary">Can you put an actor at a given map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_can_put_obj">map_can_put_obj (location)</a></td>
+	<td class="summary">Can you put an object at a given map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_enable_temp_actor_cleaning">map_enable_temp_actor_cleaning (value)</a></td>
+	<td class="summary">Toggle automatic cleaning of out of area temporary actors.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_is_water">map_is_water (location)</a></td>
+	<td class="summary">Check map location for water</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_is_on_screen">map_is_on_screen (location)</a></td>
+	<td class="summary">Checks if the map location is currently on screen</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_get_impedence">map_get_impedence (x, y, z[, ignore_objects=true])</a></td>
+	<td class="summary">Get the impedance of a map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_get_tile_num">map_get_tile_num (location[, get_original_tile_num=false])</a></td>
+	<td class="summary">get the map tile number for a given map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_get_dmg_tile_num">map_get_dmg_tile_num (x, y, z)</a></td>
+	<td class="summary">get the tile number for given location if the map tile can do damage.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_can_reach_point">map_can_reach_point (x, y, x1, y1, z)</a></td>
+	<td class="summary">Returns true if a line between points x,y and x1, y1 does not cross any missile boundary tiles</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_line_hit_check">map_line_hit_check (x, y, x1, y1, z)</a></td>
+	<td class="summary">Returns the first point on a line between x,y and x1, y1 where a missile boundary tile is crossed
+If no boundary tiles are crossed on the line then x1, y1 are returned</td>
+	</tr>
+</table>
+<h2><a href="#effects">effects</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#quake_start">quake_start (magnitude, duration)</a></td>
+	<td class="summary">start earthquake effect.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#explosion_start">explosion_start (tile_number, x, y)</a></td>
+	<td class="summary">Create an explosion at x,y on the current level.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#projectile_anim">projectile_anim (startx, starty, targetx, targety, speed, trail, initial_tile_rotation[, rotation_amount=0[, src_tile_y_offset=0]])</a></td>
+	<td class="summary">Creates a single tile projectile effect.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#projectile_anim_multi">projectile_anim_multi (tile_number, startx, starty, targets, speed, trail, initial_tile_rotation)</a></td>
+	<td class="summary">Create multiple projectile effects emanating from (startx,starty) going to multiple target locations</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hit_anim">hit_anim (x, y)</a></td>
+	<td class="summary">Hit effect.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#fade_out">fade_out ()</a></td>
+	<td class="summary">execute the pixelated map window fade out effect</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#fade_in">fade_in ()</a></td>
+	<td class="summary">execute the pixelated map window fade in effect</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#fade_tile">fade_tile (location, from_tile[, to_tile])</a></td>
+	<td class="summary">pixel fade from one tile to another.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#fade_obj">fade_obj (obj, fade_color, fade_speed)</a></td>
+	<td class="summary">black fade effect on a given object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#xor_effect">xor_effect (duration)</a></td>
+	<td class="summary">xor effect.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#xray_effect">xray_effect (duration)</a></td>
+	<td class="summary">xray effect.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#peer_effect">peer_effect ()</a></td>
+	<td class="summary">peer effect.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#wing_strike_effect">wing_strike_effect ()</a></td>
+	<td class="summary">wing strike effect.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hail_storm_effect">hail_storm_effect (location)</a></td>
+	<td class="summary">hail storm effect (U6).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#wizard_eye_effect">wizard_eye_effect (start_location)</a></td>
+	<td class="summary">wizard&rsquo;s eye effect (U6).</td>
+	</tr>
+</table>
+<h2><a href="#time">time</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#timer_set">timer_set (timer_idx, value)</a></td>
+	<td class="summary">Set specific game timer counter (U6).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#timer_get">timer_get (timer_idx)</a></td>
+	<td class="summary">Get specific game timer counter (U6).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#timer_update_all">timer_update_all (value)</a></td>
+	<td class="summary">Set all timer counters with a given value</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#clock_get_year">clock_get_year ()</a></td>
+	<td class="summary">Get the current year</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#clock_get_month">clock_get_month ()</a></td>
+	<td class="summary">Get the current month</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#clock_get_day">clock_get_day ()</a></td>
+	<td class="summary">Get the current day</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#clock_get_minute">clock_get_minute ()</a></td>
+	<td class="summary">Get the clock minute value</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#clock_get_hour">clock_get_hour ()</a></td>
+	<td class="summary">Get the clock hour value</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#clock_inc">clock_inc (minutes)</a></td>
+	<td class="summary">Increase the game clock by a number of minutes</td>
+	</tr>
+</table>
+<h2><a href="#io">io</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#input_select">input_select (allowed_characters, can_escape)</a></td>
+	<td class="summary">Get input from the keyboard</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#input_select_integer">input_select_integer (allowed_characters, can_escape)</a></td>
+	<td class="summary">Get an integer number as input from the player.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mouse_cursor_visible">mouse_cursor_visible (visible)</a></td>
+	<td class="summary">Toggle mouse cursor visibility.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mouse_cursor_set_pointer">mouse_cursor_set_pointer (pointer_index)</a></td>
+	<td class="summary">Select which mouse cursor pointer to use.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#script_wait">script_wait (duration)</a></td>
+	<td class="summary">Pause the script.</td>
+	</tr>
+</table>
+<h2><a href="#mapwindow">mapwindow</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#mapwindow_center_at_location">mapwindow_center_at_location (x, y, z)</a></td>
+	<td class="summary">Centre the mapwindow at a given location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mapwindow_get_location">mapwindow_get_location ()</a></td>
+	<td class="summary">Get the current location that the mapwindow is displaying.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mapwindow_set_location">mapwindow_set_location (x, y, z)</a></td>
+	<td class="summary">Set the current location that the mapwindow is displaying.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mapwindow_set_enable_blacking">mapwindow_set_enable_blacking (enable_blacking)</a></td>
+	<td class="summary">Toggle mapwindow &lsquo;blacking&rsquo;.</td>
+	</tr>
+</table>
+<h2><a href="#UI">UI</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#display_text_in_scroll_gump">display_text_in_scroll_gump (text)</a></td>
+	<td class="summary">Display string in scroll gump if in new style.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#lock_inventory_view">lock_inventory_view (actor)</a></td>
+	<td class="summary">Lock the inventory view to a specific Actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlock_inventory_view">unlock_inventory_view ()</a></td>
+	<td class="summary">Unlock the inventory view</td>
+	</tr>
+</table>
+<h2><a href="#Actor">Actor</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Actor.new">Actor.new (obj_n[, x=0[, y=0[, z=0[, alignment=NEUTRAL[, worktype=8]]]]])</a></td>
+	<td class="summary">Create a new temporary Actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.clone">Actor.clone (actor, location)</a></td>
+	<td class="summary">Clone an actor as a new temporary actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get">Actor.get (actor_number)</a></td>
+	<td class="summary">Get an Actor object from an actor number</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_player_actor">Actor.get_player_actor ()</a></td>
+	<td class="summary">Get the current player Actor object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.kill">Actor.kill (actor[, create_body=true])</a></td>
+	<td class="summary">Call the C++ Actor::die() method</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.hit">Actor.hit (actor, damage)</a></td>
+	<td class="summary">Call the C++ Actor::hit() method</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_range">Actor.get_range (actor, target_x, target_y)</a></td>
+	<td class="summary">Calls the get_combat_range script function with the wrapped absolute x,y distances to the target</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.move">Actor.move (actor, location)</a></td>
+	<td class="summary">Move actor to location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.walk_path">Actor.walk_path (actor)</a></td>
+	<td class="summary">Move the actor one space along their pathfinding path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.is_at_scheduled_location">Actor.is_at_scheduled_location (actor)</a></td>
+	<td class="summary">Checks to see if the actor is currently at their scheduled worktype location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.can_carry_obj">Actor.can_carry_obj (actor, object)</a></td>
+	<td class="summary">Checks to see if the actor can carry an object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.can_carry_obj_weight">Actor.can_carry_obj_weight (actor, object)</a></td>
+	<td class="summary">Checks to see if the actor can carry an object&rsquo;s weight.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.black_fade_effect">Actor.black_fade_effect (actor, fade_color, fade_speed)</a></td>
+	<td class="summary">Fade the black pixels in the actor&rsquo;s tile to a specified color.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.fade_out">Actor.fade_out (actor, fade_speed)</a></td>
+	<td class="summary">Pixel fade out the actor&rsquo;s tile to nothing.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.show_portrait">Actor.show_portrait (actor)</a></td>
+	<td class="summary">Display the actor&rsquo;s portrait</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.hide_portrait">Actor.hide_portrait (actor)</a></td>
+	<td class="summary">Hide the actor&rsquo;s portrait.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.talk">Actor.talk (actor)</a></td>
+	<td class="summary">Talk to actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.unlink_surrounding_objs">Actor.unlink_surrounding_objs (actor, make_temp)</a></td>
+	<td class="summary">For multi-tile actors, disconnect their surrounding objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.use">Actor.use (actor)</a></td>
+	<td class="summary">Call the C++ actor usecode logic.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.resurrect">Actor.resurrect (actor, location, body_obj)</a></td>
+	<td class="summary">Resurrect a dead actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_add_obj">Actor.inv_add_obj (actor, obj[, stack_objs=false])</a></td>
+	<td class="summary">Add an object to the actor&rsquo;s inventory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_remove_obj">Actor.inv_remove_obj (actor, obj)</a></td>
+	<td class="summary">Remove an object from the actor&rsquo;s inventory</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_remove_obj_qty">Actor.inv_remove_obj_qty (actor, obj_n, qty)</a></td>
+	<td class="summary">Remove a number of stackable objects from the actor&rsquo;s inventory</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_get_readied_obj_n">Actor.inv_get_readied_obj_n (actor, location)</a></td>
+	<td class="summary">Returns the obj_n the object that is readied at a given location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_ready_obj">Actor.inv_ready_obj (actor, obj)</a></td>
+	<td class="summary">Ready an object from the actor&rsquo;s inventory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_unready_obj">Actor.inv_unready_obj (actor, obj)</a></td>
+	<td class="summary">Unready an object from the actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_has_obj_n">Actor.inv_has_obj_n (actor, obj_n)</a></td>
+	<td class="summary">Check if the actor has an object of type obj_n in their inventory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_get_obj_n">Actor.inv_get_obj_n (actor, obj_n[, frame_n[, quality]])</a></td>
+	<td class="summary">Get the first object of type obj_n from the actor&rsquo;s inventory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_get_obj_total_qty">Actor.inv_get_obj_total_qty (actor, obj_n)</a></td>
+	<td class="summary">Get the total number of objects of type obj_n in the actor&rsquo;s inventory</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_get_actor">map_get_actor (location[, excluded_actor])</a></td>
+	<td class="summary">Get the actor at map location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#update_actor_schedules">update_actor_schedules ([teleport_actors=false])</a></td>
+	<td class="summary">Update all actor schedules.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#actor_inventory">actor_inventory (actor[, is_recursive=false])</a></td>
+	<td class="summary">Iterate through objects in the actor&rsquo;s inventory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.set_talk_flag">Actor.set_talk_flag (actor, flag)</a></td>
+	<td class="summary">Set one of the actor&rsquo;s talk flags</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_talk_flag">Actor.get_talk_flag (actor, flag)</a></td>
+	<td class="summary">Get the value of one of the actor&rsquo;s talk flags</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.clear_talk_flag">Actor.clear_talk_flag (actor, flag)</a></td>
+	<td class="summary">Clear one of the actor&rsquo;s talk flags</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_number_of_schedules">Actor.get_number_of_schedules (actor)</a></td>
+	<td class="summary">Get the number of schedule entries</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_schedule">Actor.get_schedule (actor, index)</a></td>
+	<td class="summary">Get an Actor schedule entry</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "clear_scroll"></a>
+    <strong>clear_scroll ()</strong>
+    </dt>
+    <dd>
+    Clear the message scroll
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "print"></a>
+    <strong>print (string)</strong>
+    </dt>
+    <dd>
+    Print a string to the message scroll
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">string</span>
+         the string to print
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "display_prompt"></a>
+    <strong>display_prompt (string)</strong>
+    </dt>
+    <dd>
+    Print the prompt string to the message scroll
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">string</span>
+         the string to print
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "nuvie_load"></a>
+    <strong>nuvie_load (path)</strong>
+    </dt>
+    <dd>
+    Load a lua script from the data/scripts/ directory
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+         lua file relative to data/scripts directory
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <p> contents of the lua file as a function block on success.</p>
+
+<pre><code>       A string is returned on compilation failure.
+       nil is returned if the file cannot be opened
+</code></pre>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "config_get_boolean_value"></a>
+    <strong>config_get_boolean_value (config_key)</strong>
+    </dt>
+    <dd>
+    Get a boolean value for a given key from the config file
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">config_key</span>
+         config key to be retrieved
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean config value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "config_get_game_type"></a>
+    <strong>config_get_game_type ()</strong>
+    </dt>
+    <dd>
+    Get the currently running game type
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a two character string representing the current game type. &ldquo;U6&rdquo;, &ldquo;MD&rdquo; or &ldquo;SE&rdquo;
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "config_get_language"></a>
+    <strong>config_get_language ()</strong>
+    </dt>
+    <dd>
+    Get the currently selected language
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a two character string representing the currently selected language. &ldquo;en&rdquo; is the default if no language has been selected.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "objlist_seek"></a>
+    <strong>objlist_seek (position)</strong>
+    </dt>
+    <dd>
+    Seek to a given position in the objlist data
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">position</span>
+         position to seek to in bytes relative to the start of the file
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "objlist_read1"></a>
+    <strong>objlist_read1 ()</strong>
+    </dt>
+    <dd>
+    Read a 1 byte integer number from the current position in the objlist data.
+   The current position is incremented by 1 after the read.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "objlist_write1"></a>
+    <strong>objlist_write1 (value)</strong>
+    </dt>
+    <dd>
+    Overwrite objlist data at the current position with a 1 byte unsigned number.
+   The current position is incremented by 1 after the write.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         number to write. This number will be cast to uint8
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        true on success false on failure
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "objlist_read2"></a>
+    <strong>objlist_read2 ()</strong>
+    </dt>
+    <dd>
+    Read a 2 byte integer number from the current position in the objlist data.
+   The current position is incremented by 2 after the read.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "objlist_write2"></a>
+    <strong>objlist_write2 (value)</strong>
+    </dt>
+    <dd>
+    Overwrite objlist data at the current position with a 2 byte unsigned number.
+   The current position is incremented by 2 after the write.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         number to write. This number will be cast to uint16
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        true on success false on failure
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "game_get_ui_style"></a>
+    <strong>game_get_ui_style ()</strong>
+    </dt>
+    <dd>
+    Get the currently selected UI style
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <p> The UI style</p>
+
+<ul>
+<li>0 = Original style</li>
+<li>1 = New style</li>
+<li>2 = Original+ cutoff map</li>
+<li>3 = Original+ full map</li>
+</ul>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_export_tmx_files"></a>
+    <strong>map_export_tmx_files ()</strong>
+    </dt>
+    <dd>
+    export map to Tiled TMX files.  This creates 1 TMX file per map level. They are saved into the currently active save game directory.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        returns true if the tmx files were created successfully. false on error
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "tileset_export"></a>
+    <strong>tileset_export ([overWriteFile=false])</strong>
+    </dt>
+    <dd>
+    export tileset to a bmp file &lsquo;data/images/tiles/nn/custom_tiles.bmp&rsquo; in the current savegame directory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">overWriteFile</span>
+            <span class="types"><span class="type">bool</span></span>
+         specifies if the output file should be overwritten if it already exists.
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        returns true if the was written to disk. false otherwise
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "tile_get_flag"></a>
+    <strong>tile_get_flag (tile_number, flag_set, bit_number)</strong>
+    </dt>
+    <dd>
+    get a tile flag for a given tile number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tile_number</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">flag_set</span>
+            <span class="types"><span class="type">int</span></span>
+         either 1, 2 or 3
+        </li>
+        <li><span class="parameter">bit_number</span>
+            <span class="types"><span class="type">int</span></span>
+         bit number of flag from flag_set 0..7
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span> or <span class="type">nil</span></span>
+        return flag or nil on error
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "tile_get_description"></a>
+    <strong>tile_get_description (tile_number)</strong>
+    </dt>
+    <dd>
+    get the description for a given tile number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tile_number</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+        the descriptive string for the given tile number.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "anim_get_number_of_entries"></a>
+    <strong>anim_get_number_of_entries ()</strong>
+    </dt>
+    <dd>
+    get the number of tile animations
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        number of animations
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "anim_get_tile"></a>
+    <strong>anim_get_tile (anim_index)</strong>
+    </dt>
+    <dd>
+    get the tile number for a given animation number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">anim_index</span>
+            <span class="types"><span class="type">int</span></span>
+         index of animation
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        tile number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "anim_set_first_frame"></a>
+    <strong>anim_set_first_frame (anim_index, anim_start_tile)</strong>
+    </dt>
+    <dd>
+    set the starting animation frame for a given animation number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">anim_index</span>
+            <span class="types"><span class="type">int</span></span>
+         index of animation loop to change
+        </li>
+        <li><span class="parameter">anim_start_tile</span>
+            <span class="types"><span class="type">int</span></span>
+         the tile number of the start animation
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "anim_get_first_frame"></a>
+    <strong>anim_get_first_frame (anim_index)</strong>
+    </dt>
+    <dd>
+    get the starting animation frame for a given animation number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">anim_index</span>
+            <span class="types"><span class="type">int</span></span>
+         index of animation
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        tile number of first animation frame
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "anim_play"></a>
+    <strong>anim_play (anim_index)</strong>
+    </dt>
+    <dd>
+    start playing animation
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">anim_index</span>
+            <span class="types"><span class="type">int</span></span>
+         index of animation to play
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "anim_stop"></a>
+    <strong>anim_stop (anim_index)</strong>
+    </dt>
+    <dd>
+    stop playing animation
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">anim_index</span>
+            <span class="types"><span class="type">int</span></span>
+         index of animation
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "play_end_sequence"></a>
+    <strong>play_end_sequence ()</strong>
+    </dt>
+    <dd>
+    play the game end sequence then quit.
+The file ending.lua is used from the relevant game&rsquo;s script directory.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "play_sfx"></a>
+    <strong>play_sfx (sfx_id[, async_playback=false])</strong>
+    </dt>
+    <dd>
+    play a sound effect
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">sfx_id</span>
+            <span class="types"><span class="type">int</span></span>
+         the sound effect index number.
+        </li>
+        <li><span class="parameter">async_playback</span>
+            <span class="types"><span class="type">bool</span></span>
+         if true then the sfx is played back asynchronously.
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "wind_set_dir"></a>
+    <strong>wind_set_dir (direction)</strong>
+    </dt>
+    <dd>
+    Set the current wind direction (U6).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">direction</span>
+            <span class="types"><span class="type">int</span></span>
+         new wind direction
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "wind_get_dir"></a>
+    <strong>wind_get_dir ()</strong>
+    </dt>
+    <dd>
+    Get the current wind direction (U6).
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "is_god_mode_enabled"></a>
+    <strong>is_god_mode_enabled ()</strong>
+    </dt>
+    <dd>
+    Is the god mode cheat currently active?
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "set_armageddon"></a>
+    <strong>set_armageddon (new_value)</strong>
+    </dt>
+    <dd>
+    Set armageddon flag
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">new_value</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "load_text_from_lzc"></a>
+    <strong>load_text_from_lzc (filename, index)</strong>
+    </dt>
+    <dd>
+    Loads text from a given LZC file.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         the lzc file to extract the text from
+        </li>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">int</span></span>
+         offset in the lzc file to load the text from
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+        the extracted text
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Tables"></a>Tables</h2>
+    <dl class="function">
+    <dt>
+    <a name = "Obj"></a>
+    <strong>Obj</strong>
+    </dt>
+    <dd>
+    An in-game object
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">parent</span>
+         (Obj|Actor) The parent of this object. Either an object if this object is in a container. Or an Actor if this object is in an inventory.
+        </li>
+        <li><span class="parameter">luatype</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         This returns &ldquo;obj&rdquo;
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+         x position
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+         y position
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+         z position
+        </li>
+        <li><span class="parameter">xyz</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a></span>
+         The object&rsquo;s Location in a MapCoord table.
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         object number
+        </li>
+        <li><span class="parameter">frame_n</span>
+            <span class="types"><span class="type">int</span></span>
+         frame number
+        </li>
+        <li><span class="parameter">quality</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">qty</span>
+            <span class="types"><span class="type">int</span></span>
+         quantity
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The object name from the &lsquo;look&rsquo; table.
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">look_string</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+        <p> A printable look description</p>
+
+<pre><code> a book
+ an elephant
+ 5 torches
+</code></pre>
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">on_map</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is the object on the map?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">in_container</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is the object in a container?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">readied</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is this object readied in someone&rsquo;s inventory?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">stackable</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is this object able to be stacked together?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">weight</span>
+            <span class="types"><span class="type">number</span></span>
+         The object&rsquo;s weight
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">tile_num</span>
+            <span class="types"><span class="type">int</span></span>
+         The tile number corresponding to the obj_n + frame_num values
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">getable</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is this object getable by the player?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">ok_to_take</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is it considered stealing if the player gets this object?
+        </li>
+        <li><span class="parameter">status</span>
+            <span class="types"><span class="type">int</span></span>
+         Object status
+        </li>
+        <li><span class="parameter">invisible</span>
+            <span class="types"><span class="type">bool</span></span>
+         Toggle object visibility
+        </li>
+        <li><span class="parameter">temporary</span>
+            <span class="types"><span class="type">bool</span></span>
+         Toggle temporary status <em>writeonly</em>
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MapCoord"></a>
+    <strong>MapCoord</strong>
+    </dt>
+    <dd>
+    A map coordinate
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+         0 for the 1024x1024 surface level, 1..5 for the dungeon levels
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Schedule"></a>
+    <strong>Schedule</strong>
+    </dt>
+    <dd>
+    An actor schedule entry
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">day_of_week</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">worktype</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor"></a>
+    <strong>Actor</strong>
+    </dt>
+    <dd>
+    An Actor object
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">xyz</span>
+         table containing location</p>
+
+<p> table format
+<code>&lt;code&gt;
+{["x"]=x, ["y"]=y, ["z"]=z}
+&lt;/code&gt;</code>
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">luatype</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         This returns &ldquo;actor&rdquo;
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">actor_num</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">align</span>
+            <span class="types"><span class="type">int</span></span>
+        <p> alignment</p>
+
+<ul>
+<li>0 = DEFAULT</li>
+<li>1 = NEUTRAL</li>
+<li>2 = EVIL</li>
+<li>3 = GOOD</li>
+<li>4 = CHAOTIC</li>
+</ul>
+
+
+        </li>
+        <li><span class="parameter">alive</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">asleep</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">base_obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">charmed</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">cold</span>
+            <span class="types"><span class="type">bool</span></span>
+         (MD) bit 0 on the status flags. Set when the actor is cold.
+        </li>
+        <li><span class="parameter">combat_mode</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">corpser_flag</span>
+            <span class="types"><span class="type">bool</span></span>
+         (U6) Has the actor been dragged underground by a corpser
+        </li>
+        <li><span class="parameter">cursed</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">dex</span>
+            <span class="types"><span class="type">int</span></span>
+         dexterity
+        </li>
+        <li><span class="parameter">direction</span>
+            <span class="types"><span class="type">int</span></span>
+        <p> The direction that the actor is facing.</p>
+
+<ul>
+<li>0 = NORTH</li>
+<li>1 = EAST</li>
+<li>2 = SOUTH</li>
+<li>3 = WEST</li>
+<li>4 = NORTHEAST</li>
+<li>5 = SOUTHEAST</li>
+<li>6 = SOUTHWEST</li>
+<li>7 = NORTHWEST</li>
+<li>8 = NONE</li>
+</ul>
+
+
+        </li>
+        <li><span class="parameter">exp</span>
+            <span class="types"><span class="type">int</span></span>
+         experience
+        </li>
+        <li><span class="parameter">frame_n</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">frenzy</span>
+            <span class="types"><span class="type">bool</span></span>
+         (MD) battle frenzy
+        </li>
+        <li><span class="parameter">hit_flag</span>
+            <span class="types"><span class="type">bool</span></span>
+         Used by U6 to determine if an actor has been hit.
+        </li>
+        <li><span class="parameter">hp</span>
+            <span class="types"><span class="type">int</span></span>
+         hit points
+        </li>
+        <li><span class="parameter">hypoxia</span>
+            <span class="types"><span class="type">bool</span></span>
+         (MD) bit 6 on the obj flags. Tells if the actor is oxygen deprived
+        </li>
+        <li><span class="parameter">in_party</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is the actor a mamber of the party?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">in_vehicle</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is the actor currently in a vehicle?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">int</span>
+            <span class="types"><span class="type">int</span></span>
+         intelligence
+        </li>
+        <li><span class="parameter">level</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">magic</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">max_hp</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">mpts</span>
+            <span class="types"><span class="type">int</span></span>
+         movement points
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">obj_flag_0</span>
+            <span class="types"><span class="type">bool</span></span>
+         obj flag 0
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">old_align</span>
+            <span class="types"><span class="type">int</span></span>
+         Old alignment
+        </li>
+        <li><span class="parameter">old_frame_n</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">paralyzed</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">poisoned</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">protected</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">sched_loc</span>
+            <span class="types"><span class="type">int</span></span>
+         The location defined for the Actor&rsquo;s currently active schedule entry.
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">sched_wt</span>
+            <span class="types"><span class="type">int</span></span>
+         The worktype of the currently active schedule.
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">str</span>
+            <span class="types"><span class="type">int</span></span>
+         strength
+        </li>
+        <li><span class="parameter">temp</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is this a temporary actor?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">tile_num</span>
+            <span class="types"><span class="type">int</span></span>
+         The tile number based on the obj_n + frame_n combination.
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">visible</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is the actor currently visible?
+        </li>
+        <li><span class="parameter">wt</span>
+            <span class="types"><span class="type">int</span></span>
+         worktype
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Object"></a>Object</h2>
+    <dl class="function">
+    <dt>
+    <a name = "Obj.new"></a>
+    <strong>Obj.new ([obj[, obj_n[, frame_n[, quality[, qty[, x[, y[, z]]]]]]]])</strong>
+    </dt>
+    <dd>
+    Create a new Obj.
+This function can clone and existing object or create a new object from one or more parameters.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to clone
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         Object number
+        </li>
+        <li><span class="parameter">frame_n</span>
+            <span class="types"><span class="type">int</span></span>
+         Frame number
+        </li>
+        <li><span class="parameter">quality</span>
+            <span class="types"><span class="type">int</span></span>
+         Quality
+        </li>
+        <li><span class="parameter">qty</span>
+            <span class="types"><span class="type">int</span></span>
+         Quantity
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+         x map position
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+         y map position
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+         z map position
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+        The newly created object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.moveToMap"></a>
+    <strong>Obj.moveToMap (obj[, location])</strong>
+    </dt>
+    <dd>
+    Move an object to the map.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to move
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         Map location. If not supplied the location will be taken from the object&rsquo;s x,y and z variables
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.moveToInv"></a>
+    <strong>Obj.moveToInv (obj, actor_num)</strong>
+    </dt>
+    <dd>
+    Move an object into an Actor&rsquo;s inventory
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to move
+        </li>
+        <li><span class="parameter">actor_num</span>
+            <span class="types"><span class="type">int</span></span>
+         Actor number
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.moveToCont"></a>
+    <strong>Obj.moveToCont (obj, container)</strong>
+    </dt>
+    <dd>
+    Move an object into a container
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to move
+        </li>
+        <li><span class="parameter">container</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Container object to move into
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.removeFromCont"></a>
+    <strong>Obj.removeFromCont (obj)</strong>
+    </dt>
+    <dd>
+    Remove an object from its container.
+The object will be unlinked from the engine after this operation. It will be freed after it goes out of scope.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to move
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.use"></a>
+    <strong>Obj.use (obj)</strong>
+    </dt>
+    <dd>
+    Call the old C++ usecode logic for a given object.  (U6)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to use
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.removeFromEngine"></a>
+    <strong>Obj.removeFromEngine (obj)</strong>
+    </dt>
+    <dd>
+    Remove an object from the game engine.
+The object will be unlinked from the engine after this operation. It will be freed after it goes out of scope.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to unlink
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "usecode_look"></a>
+    <strong>usecode_look (object)</strong>
+    </dt>
+    <dd>
+    Call the C++ usecode look function for a given Obj
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         object to look at
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        returns true if the Obj has a C++ usecode look function
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "find_obj"></a>
+    <strong>find_obj (z, obj_n[, frame_n[, quality]])</strong>
+    </dt>
+    <dd>
+    Iterate through all objects of a specific type on a given map level.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+         map level to search
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         object number to search for
+        </li>
+        <li><span class="parameter">frame_n</span>
+            <span class="types"><span class="type">int</span></span>
+         filter search based on specific frame number
+        </li>
+        <li><span class="parameter">quality</span>
+            <span class="types"><span class="type">int</span></span>
+         filter search based on specific quality value
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+  <span class="keyword">local</span> loc = player_get_location()
+  <span class="keyword">for</span> obj <span class="keyword">in</span> find_obj(loc.z, <span class="number">223</span>, <span class="number">1</span>) <span class="keyword">do</span>
+    <span class="keyword">if</span> obj ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+      explode_obj(obj)
+    <span class="keyword">end</span>
+  <span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "find_obj_from_area"></a>
+    <strong>find_obj_from_area (location, width, height)</strong>
+    </dt>
+    <dd>
+    Iterate through all objects within a given area.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         location for the effect to take place
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">int</span></span>
+         width of area to search
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">int</span></span>
+         height of area to search
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "objs_at_loc"></a>
+    <strong>objs_at_loc (location)</strong>
+    </dt>
+    <dd>
+    Iterate through objects at a given map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "find_volcano_near_player"></a>
+    <strong>find_volcano_near_player (location)</strong>
+    </dt>
+    <dd>
+    Find a volcano object near the player.  This function searches an area +/&ndash; 5 tiles around the location specified.
+The search starts top left and finishes bottom right. The first volcano/fumarole object found is returned.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         centre of the search area
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Obj">Obj</a> or <span class="type">nil</span></span>
+        first volcano/fumarole object found or nil if none found.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "container_objs"></a>
+    <strong>container_objs (container[, is_recursive=false])</strong>
+    </dt>
+    <dd>
+    Iterate through objects in a container.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">container</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         container object to search.
+        </li>
+        <li><span class="parameter">is_recursive</span>
+            <span class="types"><span class="type">bool</span></span>
+         should we search containers inside the container?
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+  <span class="keyword">local</span> child
+  <span class="keyword">for</span> child <span class="keyword">in</span> container_objs(obj) <span class="keyword">do</span>  <span class="comment">-- look through container for effect object.
+</span>    <span class="keyword">if</span> child.obj_n == <span class="number">337</span> <span class="keyword">then</span> <span class="comment">--effect
+</span>      found = <span class="keyword">true</span>
+      <span class="global">print</span>(<span class="string">"\nIt's trapped.\n"</span>);
+      <span class="keyword">break</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2><a name="player"></a>player</h2>
+    <dl class="function">
+    <dt>
+    <a name = "player_get_name"></a>
+    <strong>player_get_name ()</strong>
+    </dt>
+    <dd>
+    Get the player name
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string player name
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_get_gender"></a>
+    <strong>player_get_gender ()</strong>
+    </dt>
+    <dd>
+    Get the gender of the player
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <ul>
+<li>0 = Male</li>
+<li>1 = Female</li>
+</ul>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_get_location"></a>
+    <strong>player_get_location ()</strong>
+    </dt>
+    <dd>
+    Get the location of the player
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_get_karma"></a>
+    <strong>player_get_karma ()</strong>
+    </dt>
+    <dd>
+    Get the player&rsquo;s karma value (U6)
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        karma value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_set_karma"></a>
+    <strong>player_set_karma (value)</strong>
+    </dt>
+    <dd>
+    Set the karma value for the player (U6)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         new karma value
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_dec_alcohol"></a>
+    <strong>player_dec_alcohol (value)</strong>
+    </dt>
+    <dd>
+    Decrement the player&rsquo;s alcohol counter (U6) If value is greater than the counter the the counter is left at zero.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         number to decrement counter by
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_move"></a>
+    <strong>player_move (location, teleport)</strong>
+    </dt>
+    <dd>
+    Move player to given map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         map location to move player to.
+        </li>
+        <li><span class="parameter">teleport</span>
+            <span class="types"><span class="type">bool</span></span>
+         spawn eggs if true
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_set_actor"></a>
+    <strong>player_set_actor (actor)</strong>
+    </dt>
+    <dd>
+    Make the given actor the player controlled actor.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_is_in_solo_mode"></a>
+    <strong>player_is_in_solo_mode ()</strong>
+    </dt>
+    <dd>
+    Check if the player is currently in solo mode
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        true if the player is in solo mode otherwise false
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="party"></a>party</h2>
+    <dl class="function">
+    <dt>
+    <a name = "party_is_in_combat_mode"></a>
+    <strong>party_is_in_combat_mode ()</strong>
+    </dt>
+    <dd>
+    Check to see if the party is currently in combat mode
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        true if the party is in combat mode otherwise false
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_set_combat_mode"></a>
+    <strong>party_set_combat_mode (value)</strong>
+    </dt>
+    <dd>
+    Toggle combat mode
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">boolean</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_set_party_mode"></a>
+    <strong>party_set_party_mode ()</strong>
+    </dt>
+    <dd>
+    Set party mode.  The first member in the party becomes the leader.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_move"></a>
+    <strong>party_move (location)</strong>
+    </dt>
+    <dd>
+    Move party to a given map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         map location to move party to.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_use_entrance"></a>
+    <strong>party_use_entrance (entrance, exit)</strong>
+    </dt>
+    <dd>
+    Walk party members to an entrance and teleport them to the exit on the other side. </p>
+
+<p><strong>Warning:</strong> This function uses an old timer based class. So it will execute synchronously on subsequent calls to the main update loop.</p>
+
+<p><strong>FIXME:</strong> This logic should probably be done in pure script with pathfinder helper functions. ;&ndash;)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">entrance</span>
+            <span class="types"><span class="type">x,y,z</span></span>
+         entrance location
+        </li>
+        <li><span class="parameter">exit</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         exit location
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_get_size"></a>
+    <strong>party_get_size ()</strong>
+    </dt>
+    <dd>
+    Returns the number of members in the party
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        number of party members
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_get_member"></a>
+    <strong>party_get_member (member_num)</strong>
+    </dt>
+    <dd>
+    Get the Actor object for a given party member
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">member_num</span>
+            <span class="types"><span class="type">int</span></span>
+         index of party member to retrieve
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Actor">Actor</a> or <span class="type">nil</span></span>
+        returns nil if actor cannot be found for given index
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_update_leader"></a>
+    <strong>party_update_leader ()</strong>
+    </dt>
+    <dd>
+    Get the current party leader and update player
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_resurrect_dead_members"></a>
+    <strong>party_resurrect_dead_members ()</strong>
+    </dt>
+    <dd>
+    Resurrect dead party members
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_exit_vehicle"></a>
+    <strong>party_exit_vehicle (location)</strong>
+    </dt>
+    <dd>
+    Exit party members from vehicle
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         map location to move party to once they exit the vehicle
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_dismount_from_horses"></a>
+    <strong>party_dismount_from_horses ()</strong>
+    </dt>
+    <dd>
+    Dismount all party members from their horses (U6)
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_set_in_vehicle"></a>
+    <strong>party_set_in_vehicle (value)</strong>
+    </dt>
+    <dd>
+    Toggle party vehicle mode
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_show_all"></a>
+    <strong>party_show_all ()</strong>
+    </dt>
+    <dd>
+    Show all party members on the map.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_hide_all"></a>
+    <strong>party_hide_all ()</strong>
+    </dt>
+    <dd>
+    Hide all party members on the map.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_members"></a>
+    <strong>party_members ()</strong>
+    </dt>
+    <dd>
+    Iterate through party members.
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+  <span class="keyword">local</span> actor
+  <span class="keyword">for</span> actor <span class="keyword">in</span> party_members() <span class="keyword">do</span>
+    actor.poisoned = <span class="keyword">false</span>
+  <span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2><a name="map"></a>map</h2>
+    <dl class="function">
+    <dt>
+    <a name = "map_get_obj"></a>
+    <strong>map_get_obj (location[, obj_n[, inc_multi_tile_objs=false]])</strong>
+    </dt>
+    <dd>
+    Get an object from the map
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+         object number
+        </li>
+        <li><span class="parameter">inc_multi_tile_objs</span>
+            <span class="types"><span class="type">bool</span></span>
+         Should this search also include surrounding multi-tile objects that cover this location?
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Obj">Obj</a> or <span class="type">nil</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_remove_obj"></a>
+    <strong>map_remove_obj (location[, obj_n])</strong>
+    </dt>
+    <dd>
+    Remove an object from the map. </p>
+
+<p>Once removed from the map the object has no engine location and will be cleaned up in the next GC
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+         object number
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        success/failure
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_can_put"></a>
+    <strong>map_can_put (location)</strong>
+    </dt>
+    <dd>
+    Can you put an actor at a given map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        true if actor an be placed at location otherwise false
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_can_put_obj"></a>
+    <strong>map_can_put_obj (location)</strong>
+    </dt>
+    <dd>
+    Can you put an object at a given map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        true if an object an be placed at location otherwise false
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_enable_temp_actor_cleaning"></a>
+    <strong>map_enable_temp_actor_cleaning (value)</strong>
+    </dt>
+    <dd>
+    Toggle automatic cleaning of out of area temporary actors.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_is_water"></a>
+    <strong>map_is_water (location)</strong>
+    </dt>
+    <dd>
+    Check map location for water
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        true if the map at location is a water tile otherwise false
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_is_on_screen"></a>
+    <strong>map_is_on_screen (location)</strong>
+    </dt>
+    <dd>
+    Checks if the map location is currently on screen
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        true if the map location is currently on screen otherwise false
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_get_impedence"></a>
+    <strong>map_get_impedence (x, y, z[, ignore_objects=true])</strong>
+    </dt>
+    <dd>
+    Get the impedance of a map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">ignore_objects</span>
+            <span class="types"><span class="type">bool</span></span>
+         Ignore objects while calculating impedance
+         (<em>default</em> true)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        impedance
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_get_tile_num"></a>
+    <strong>map_get_tile_num (location[, get_original_tile_num=false])</strong>
+    </dt>
+    <dd>
+    get the map tile number for a given map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+        <li><span class="parameter">get_original_tile_num</span>
+            <span class="types"><span class="type">bool</span></span>
+         return the original tile_num.
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span> or <span class="type">nil</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_get_dmg_tile_num"></a>
+    <strong>map_get_dmg_tile_num (x, y, z)</strong>
+    </dt>
+    <dd>
+    get the tile number for given location if the map tile can do damage.
+If the base map tile does not do damage then objects at the map location
+are also searched and the tile number of the first object that can damage the player
+is returned.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span> or <span class="type">nil</span></span>
+        tile number of the damaging tile or nil if no damaging tiles are found at the location
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_can_reach_point"></a>
+    <strong>map_can_reach_point (x, y, x1, y1, z)</strong>
+    </dt>
+    <dd>
+    Returns true if a line between points x,y and x1, y1 does not cross any missile boundary tiles
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">x1</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y1</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_line_hit_check"></a>
+    <strong>map_line_hit_check (x, y, x1, y1, z)</strong>
+    </dt>
+    <dd>
+    Returns the first point on a line between x,y and x1, y1 where a missile boundary tile is crossed
+If no boundary tiles are crossed on the line then x1, y1 are returned
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">x1</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y1</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int,int</span></span>
+        an x,y coord
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="effects"></a>effects</h2>
+    <dl class="function">
+    <dt>
+    <a name = "quake_start"></a>
+    <strong>quake_start (magnitude, duration)</strong>
+    </dt>
+    <dd>
+    start earthquake effect.  This shakes the mapwindow and makes a sound.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">magnitude</span>
+            <span class="types"><span class="type">int</span></span>
+         quake strength
+        </li>
+        <li><span class="parameter">duration</span>
+            <span class="types"><span class="type">int</span></span>
+         duration of effect in milliseconds
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        always returns true
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "explosion_start"></a>
+    <strong>explosion_start (tile_number, x, y)</strong>
+    </dt>
+    <dd>
+    Create an explosion at x,y on the current level.  This function returns an iterator function
+to iterate through a list of Actors and Objects that were hit by the explosion.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tile_number</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+        A table containing the hit Actor and Obj objects.
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+    <span class="keyword">local</span> hit_items = explosion_start(<span class="number">0x17e</span>, actor.x, actor.y)
+
+    <span class="keyword">for</span> k,v <span class="keyword">in</span> <span class="global">pairs</span>(hit_items) <span class="keyword">do</span>
+      <span class="keyword">if</span> v.luatype == <span class="string">"actor"</span> <span class="keyword">then</span>
+        actor_hit(v, random(<span class="number">1</span>, <span class="number">0x14</span>))
+      <span class="keyword">end</span>
+    <span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "projectile_anim"></a>
+    <strong>projectile_anim (startx, starty, targetx, targety, speed, trail, initial_tile_rotation[, rotation_amount=0[, src_tile_y_offset=0]])</strong>
+    </dt>
+    <dd>
+    Creates a single tile projectile effect.  This travels in a straight line from (startx,starty) to (targetx,targety)
+the tile can leave a trail and rotate whilst moving.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">startx</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">starty</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">targetx</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">targety</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">speed</span>
+            <span class="types"><span class="type">int</span></span>
+         how far the tile travels each update. The tile will move speed * 2 pixels along the line each iteration
+        </li>
+        <li><span class="parameter">trail</span>
+            <span class="types"><span class="type">bool</span></span>
+         if true a copy of the tile will be left at intervals along the line
+        </li>
+        <li><span class="parameter">initial_tile_rotation</span>
+            <span class="types"><span class="type">int</span></span>
+         in degrees
+        </li>
+        <li><span class="parameter">rotation_amount</span>
+            <span class="types"><span class="type">int</span></span>
+         in degrees
+         (<em>default</em> 0)
+        </li>
+        <li><span class="parameter">src_tile_y_offset</span>
+            <span class="types"><span class="type">int</span></span>
+         use by U6 projectile tiles which need to be centred vertically before rotation. eg arrows.
+         (<em>default</em> 0)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        Always returns true
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "projectile_anim_multi"></a>
+    <strong>projectile_anim_multi (tile_number, startx, starty, targets, speed, trail, initial_tile_rotation)</strong>
+    </dt>
+    <dd>
+    Create multiple projectile effects emanating from (startx,starty) going to multiple target locations
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tile_number</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">startx</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">starty</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">targets</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">{MapCoord,...}</a></span>
+
+
+        </li>
+        <li><span class="parameter">speed</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">trail</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">initial_tile_rotation</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a> or <span class="type">bool</span></span>
+        A table containing the hit Actor and Obj objects. Or false if argument 4 isn&rsquo;t a table
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hit_anim"></a>
+    <strong>hit_anim (x, y)</strong>
+    </dt>
+    <dd>
+    Hit effect.  Displays the hit/damage tile over the map at a given location for a short period of time. The hit sfx is also played.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        Always returns true
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "fade_out"></a>
+    <strong>fade_out ()</strong>
+    </dt>
+    <dd>
+    execute the pixelated map window fade out effect
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "fade_in"></a>
+    <strong>fade_in ()</strong>
+    </dt>
+    <dd>
+    execute the pixelated map window fade in effect
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "fade_tile"></a>
+    <strong>fade_tile (location, from_tile[, to_tile])</strong>
+    </dt>
+    <dd>
+    pixel fade from one tile to another.  If to_tile is not supplied the fade to blank
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         location for the effect to take place
+        </li>
+        <li><span class="parameter">from_tile</span>
+            <span class="types"><span class="type">int</span></span>
+         tile number of the tile to fade from
+        </li>
+        <li><span class="parameter">to_tile</span>
+            <span class="types"><span class="type">int</span></span>
+         tile number of the tile to fade to
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "fade_obj"></a>
+    <strong>fade_obj (obj, fade_color, fade_speed)</strong>
+    </dt>
+    <dd>
+    black fade effect on a given object
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         object to fade
+        </li>
+        <li><span class="parameter">fade_color</span>
+            <span class="types"><span class="type">int</span></span>
+         the colour (palette index) to fade the black pixels to.
+        </li>
+        <li><span class="parameter">fade_speed</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "xor_effect"></a>
+    <strong>xor_effect (duration)</strong>
+    </dt>
+    <dd>
+    xor effect.  XOR the colours on the mapwindow
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">duration</span>
+            <span class="types"><span class="type">int</span></span>
+         in milliseconds
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "xray_effect"></a>
+    <strong>xray_effect (duration)</strong>
+    </dt>
+    <dd>
+    xray effect.  Disable map blacking. (see through walls)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">duration</span>
+            <span class="types"><span class="type">int</span></span>
+         in milliseconds
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "peer_effect"></a>
+    <strong>peer_effect ()</strong>
+    </dt>
+    <dd>
+    peer effect.
+Display an overview of the current area in the MapWindow. Any new actions
+cancel the effect and return to the script.
+(area is 48x48 tiles around the player, regardless of MapWindow size)
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "wing_strike_effect"></a>
+    <strong>wing_strike_effect ()</strong>
+    </dt>
+    <dd>
+    wing strike effect.  A dragon flies across the screen. (U6)
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hail_storm_effect"></a>
+    <strong>hail_storm_effect (location)</strong>
+    </dt>
+    <dd>
+    hail storm effect (U6).  Hail stones rain down on the mapwindow.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "wizard_eye_effect"></a>
+    <strong>wizard_eye_effect (start_location)</strong>
+    </dt>
+    <dd>
+    wizard&rsquo;s eye effect (U6).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">start_location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="time"></a>time</h2>
+    <dl class="function">
+    <dt>
+    <a name = "timer_set"></a>
+    <strong>timer_set (timer_idx, value)</strong>
+    </dt>
+    <dd>
+    Set specific game timer counter (U6).
+These counters are decremented each turn and are used for things like torch duration, eclipse etc.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">timer_idx</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "timer_get"></a>
+    <strong>timer_get (timer_idx)</strong>
+    </dt>
+    <dd>
+    Get specific game timer counter (U6).
+These counters are decremented each turn and are used for things like torch duration, eclipse etc.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">timer_idx</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        value of the timer
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "timer_update_all"></a>
+    <strong>timer_update_all (value)</strong>
+    </dt>
+    <dd>
+    Set all timer counters with a given value
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "clock_get_year"></a>
+    <strong>clock_get_year ()</strong>
+    </dt>
+    <dd>
+    Get the current year
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "clock_get_month"></a>
+    <strong>clock_get_month ()</strong>
+    </dt>
+    <dd>
+    Get the current month
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "clock_get_day"></a>
+    <strong>clock_get_day ()</strong>
+    </dt>
+    <dd>
+    Get the current day
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "clock_get_minute"></a>
+    <strong>clock_get_minute ()</strong>
+    </dt>
+    <dd>
+    Get the clock minute value
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "clock_get_hour"></a>
+    <strong>clock_get_hour ()</strong>
+    </dt>
+    <dd>
+    Get the clock hour value
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        the hour in 24 hour format
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "clock_inc"></a>
+    <strong>clock_inc (minutes)</strong>
+    </dt>
+    <dd>
+    Increase the game clock by a number of minutes
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">minutes</span>
+            <span class="types"><span class="type">int</span></span>
+         the number of minutes to increment the clock by
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="io"></a>io</h2>
+    <dl class="function">
+    <dt>
+    <a name = "input_select"></a>
+    <strong>input_select (allowed_characters, can_escape)</strong>
+    </dt>
+    <dd>
+    Get input from the keyboard
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">allowed_characters</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         set to nil if all characters are permitted
+        </li>
+        <li><span class="parameter">can_escape</span>
+            <span class="types"><span class="type">bool</span></span>
+         can the player use escape to skip input
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+        characters input by the player
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "input_select_integer"></a>
+    <strong>input_select_integer (allowed_characters, can_escape)</strong>
+    </dt>
+    <dd>
+    Get an integer number as input from the player.
+The characters input by the player are converted into an integer using the
+C function strtol()
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">allowed_characters</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         set to nil if all characters are permitted
+        </li>
+        <li><span class="parameter">can_escape</span>
+            <span class="types"><span class="type">bool</span></span>
+         can the player use escape to skip input
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">integer</span></span>
+        number input by the player
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mouse_cursor_visible"></a>
+    <strong>mouse_cursor_visible (visible)</strong>
+    </dt>
+    <dd>
+    Toggle mouse cursor visibility.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">visible</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mouse_cursor_set_pointer"></a>
+    <strong>mouse_cursor_set_pointer (pointer_index)</strong>
+    </dt>
+    <dd>
+    Select which mouse cursor pointer to use.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pointer_index</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "script_wait"></a>
+    <strong>script_wait (duration)</strong>
+    </dt>
+    <dd>
+    Pause the script.  Tile animation will continue while the script is paused.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">duration</span>
+            <span class="types"><span class="type">int</span></span>
+         in milliseconds
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="mapwindow"></a>mapwindow</h2>
+    <dl class="function">
+    <dt>
+    <a name = "mapwindow_center_at_location"></a>
+    <strong>mapwindow_center_at_location (x, y, z)</strong>
+    </dt>
+    <dd>
+    Centre the mapwindow at a given location.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mapwindow_get_location"></a>
+    <strong>mapwindow_get_location ()</strong>
+    </dt>
+    <dd>
+    Get the current location that the mapwindow is displaying.  This is the top left corner
+of the mapwindow.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mapwindow_set_location"></a>
+    <strong>mapwindow_set_location (x, y, z)</strong>
+    </dt>
+    <dd>
+    Set the current location that the mapwindow is displaying.  This is the top left corner
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "mapwindow_set_enable_blacking"></a>
+    <strong>mapwindow_set_enable_blacking (enable_blacking)</strong>
+    </dt>
+    <dd>
+    Toggle mapwindow &lsquo;blacking&rsquo;.  Blacking hides tiles that are not visible to the player because they are obscured
+by a wall.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">enable_blacking</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="UI"></a>UI</h2>
+    <dl class="function">
+    <dt>
+    <a name = "display_text_in_scroll_gump"></a>
+    <strong>display_text_in_scroll_gump (text)</strong>
+    </dt>
+    <dd>
+    Display string in scroll gump if in new style.  Otherwise display on regular message scroll.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         the text to display in the scroll
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "lock_inventory_view"></a>
+    <strong>lock_inventory_view (actor)</strong>
+    </dt>
+    <dd>
+    Lock the inventory view to a specific Actor.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlock_inventory_view"></a>
+    <strong>unlock_inventory_view ()</strong>
+    </dt>
+    <dd>
+    Unlock the inventory view
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Actor"></a>Actor</h2>
+    <dl class="function">
+    <dt>
+    <a name = "Actor.new"></a>
+    <strong>Actor.new (obj_n[, x=0[, y=0[, z=0[, alignment=NEUTRAL[, worktype=8]]]]])</strong>
+    </dt>
+    <dd>
+    Create a new temporary Actor.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+         (<em>default</em> 0)
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+         (<em>default</em> 0)
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+         (<em>default</em> 0)
+        </li>
+        <li><span class="parameter">alignment</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+         (<em>default</em> NEUTRAL)
+        </li>
+        <li><span class="parameter">worktype</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+         (<em>default</em> 8)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Actor">Actor</a> or <span class="type">nil</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.clone"></a>
+    <strong>Actor.clone (actor, location)</strong>
+    </dt>
+    <dd>
+    Clone an actor as a new temporary actor.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+         Actor to clone
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         Location to place newly cloned actor.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get"></a>
+    <strong>Actor.get (actor_number)</strong>
+    </dt>
+    <dd>
+    Get an Actor object from an actor number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor_number</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_player_actor"></a>
+    <strong>Actor.get_player_actor ()</strong>
+    </dt>
+    <dd>
+    Get the current player Actor object
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.kill"></a>
+    <strong>Actor.kill (actor[, create_body=true])</strong>
+    </dt>
+    <dd>
+    Call the C++ Actor::die() method
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">create_body</span>
+            <span class="types"><span class="type">bool</span></span>
+         Create a dead body on the map?
+         (<em>default</em> true)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.hit"></a>
+    <strong>Actor.hit (actor, damage)</strong>
+    </dt>
+    <dd>
+    Call the C++ Actor::hit() method
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">damage</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_range"></a>
+    <strong>Actor.get_range (actor, target_x, target_y)</strong>
+    </dt>
+    <dd>
+    Calls the get_combat_range script function with the wrapped absolute x,y distances to the target
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">target_x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">target_y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        range
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.move"></a>
+    <strong>Actor.move (actor, location)</strong>
+    </dt>
+    <dd>
+    Move actor to location.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        Returns true is the move was successful. False if the move fails.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.walk_path"></a>
+    <strong>Actor.walk_path (actor)</strong>
+    </dt>
+    <dd>
+    Move the actor one space along their pathfinding path.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.is_at_scheduled_location"></a>
+    <strong>Actor.is_at_scheduled_location (actor)</strong>
+    </dt>
+    <dd>
+    Checks to see if the actor is currently at their scheduled worktype location.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.can_carry_obj"></a>
+    <strong>Actor.can_carry_obj (actor, object)</strong>
+    </dt>
+    <dd>
+    Checks to see if the actor can carry an object.
+It first checks that the object is get-able then checks that
+the actor can physically carry the object&rsquo;s weight.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">object</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.can_carry_obj_weight"></a>
+    <strong>Actor.can_carry_obj_weight (actor, object)</strong>
+    </dt>
+    <dd>
+    Checks to see if the actor can carry an object&rsquo;s weight.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">object</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.black_fade_effect"></a>
+    <strong>Actor.black_fade_effect (actor, fade_color, fade_speed)</strong>
+    </dt>
+    <dd>
+    Fade the black pixels in the actor&rsquo;s tile to a specified color.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">fade_color</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">fade_speed</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.fade_out"></a>
+    <strong>Actor.fade_out (actor, fade_speed)</strong>
+    </dt>
+    <dd>
+    Pixel fade out the actor&rsquo;s tile to nothing.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">fade_speed</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.show_portrait"></a>
+    <strong>Actor.show_portrait (actor)</strong>
+    </dt>
+    <dd>
+    Display the actor&rsquo;s portrait
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.hide_portrait"></a>
+    <strong>Actor.hide_portrait (actor)</strong>
+    </dt>
+    <dd>
+    Hide the actor&rsquo;s portrait.
+The party view is shown if in original UI mode.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.talk"></a>
+    <strong>Actor.talk (actor)</strong>
+    </dt>
+    <dd>
+    Talk to actor.  The script will pause until the conversation has ended.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.unlink_surrounding_objs"></a>
+    <strong>Actor.unlink_surrounding_objs (actor, make_temp)</strong>
+    </dt>
+    <dd>
+    For multi-tile actors, disconnect their surrounding objects.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">make_temp</span>
+            <span class="types"><span class="type">bool</span></span>
+         Should the objects be made temporary?
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.use"></a>
+    <strong>Actor.use (actor)</strong>
+    </dt>
+    <dd>
+    Call the C++ actor usecode logic.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.resurrect"></a>
+    <strong>Actor.resurrect (actor, location, body_obj)</strong>
+    </dt>
+    <dd>
+    Resurrect a dead actor.  If the actor&rsquo;s body is not on the map then the actor will
+be placed at a random map location around the player.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         Location to put the resurrected actor on the map
+        </li>
+        <li><span class="parameter">body_obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         The dead actor&rsquo;s body object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_add_obj"></a>
+    <strong>Actor.inv_add_obj (actor, obj[, stack_objs=false])</strong>
+    </dt>
+    <dd>
+    Add an object to the actor&rsquo;s inventory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+        <li><span class="parameter">stack_objs</span>
+            <span class="types"><span class="type">bool</span></span>
+         Should we stack obj.qty into existing objects?
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_remove_obj"></a>
+    <strong>Actor.inv_remove_obj (actor, obj)</strong>
+    </dt>
+    <dd>
+    Remove an object from the actor&rsquo;s inventory
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_remove_obj_qty"></a>
+    <strong>Actor.inv_remove_obj_qty (actor, obj_n, qty)</strong>
+    </dt>
+    <dd>
+    Remove a number of stackable objects from the actor&rsquo;s inventory
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         Type of object to remove.
+        </li>
+        <li><span class="parameter">qty</span>
+            <span class="types"><span class="type">int</span></span>
+         Number of objects to remove.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        returns the number of objects actually removed. This may be less than were requested.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_get_readied_obj_n"></a>
+    <strong>Actor.inv_get_readied_obj_n (actor, location)</strong>
+    </dt>
+    <dd>
+    Returns the obj_n the object that is readied at a given location.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><span class="type">int</span></span>
+        <ul>
+<li>0 = HEAD</li>
+<li>1 = NECK</li>
+<li>2 = BODY</li>
+<li>3 = ARM</li>
+<li>4 = ARM_2</li>
+<li>5 = HAND</li>
+<li>6 = HAND_2</li>
+<li>7 = FOOT</li>
+</ul>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        returns obj_n or -1 if nothing is readied at the specified location.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_ready_obj"></a>
+    <strong>Actor.inv_ready_obj (actor, obj)</strong>
+    </dt>
+    <dd>
+    Ready an object from the actor&rsquo;s inventory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_unready_obj"></a>
+    <strong>Actor.inv_unready_obj (actor, obj)</strong>
+    </dt>
+    <dd>
+    Unready an object from the actor.
+First attempt to unready object using usecode. If there is no unready usecode then just unready the object normally.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_has_obj_n"></a>
+    <strong>Actor.inv_has_obj_n (actor, obj_n)</strong>
+    </dt>
+    <dd>
+    Check if the actor has an object of type obj_n in their inventory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         object number to search for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_get_obj_n"></a>
+    <strong>Actor.inv_get_obj_n (actor, obj_n[, frame_n[, quality]])</strong>
+    </dt>
+    <dd>
+    Get the first object of type obj_n from the actor&rsquo;s inventory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         object number to search for
+        </li>
+        <li><span class="parameter">frame_n</span>
+            <span class="types"><span class="type">int</span></span>
+         search on frame number
+        </li>
+        <li><span class="parameter">quality</span>
+            <span class="types"><span class="type">int</span></span>
+         search on object quality
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+        returns an object or nil if no match was found
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_get_obj_total_qty"></a>
+    <strong>Actor.inv_get_obj_total_qty (actor, obj_n)</strong>
+    </dt>
+    <dd>
+    Get the total number of objects of type obj_n in the actor&rsquo;s inventory
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         object number to search for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_get_actor"></a>
+    <strong>map_get_actor (location[, excluded_actor])</strong>
+    </dt>
+    <dd>
+    Get the actor at map location.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+        <li><span class="parameter">excluded_actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+         Actor to be excluded from search results
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+        returns the actor or nil if no actor was found
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "update_actor_schedules"></a>
+    <strong>update_actor_schedules ([teleport_actors=false])</strong>
+    </dt>
+    <dd>
+    Update all actor schedules.
+Schedules change on the hour.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">teleport_actors</span>
+            <span class="types"><span class="type">bool</span></span>
+         Should actors teleport to their new scheduled location?
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "actor_inventory"></a>
+    <strong>actor_inventory (actor[, is_recursive=false])</strong>
+    </dt>
+    <dd>
+    Iterate through objects in the actor&rsquo;s inventory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">is_recursive</span>
+            <span class="types"><span class="type">bool</span></span>
+         should we search containers inside the inventory?
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+   <span class="keyword">local</span> ac = <span class="number">0</span>
+   <span class="keyword">local</span> obj
+
+   <span class="keyword">for</span> obj <span class="keyword">in</span> actor_inventory(actor) <span class="keyword">do</span>
+      <span class="keyword">if</span> obj.readied <span class="keyword">then</span>
+         <span class="keyword">local</span> armour = armour_tbl[obj.obj_n]
+         <span class="keyword">if</span> armour ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+            ac = ac + armour
+         <span class="keyword">end</span>
+      <span class="keyword">end</span>
+   <span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Actor.set_talk_flag"></a>
+    <strong>Actor.set_talk_flag (actor, flag)</strong>
+    </dt>
+    <dd>
+    Set one of the actor&rsquo;s talk flags
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">flag</span>
+            <span class="types"><span class="type">int</span></span>
+         The flag to set. 0..7
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_talk_flag"></a>
+    <strong>Actor.get_talk_flag (actor, flag)</strong>
+    </dt>
+    <dd>
+    Get the value of one of the actor&rsquo;s talk flags
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">flag</span>
+            <span class="types"><span class="type">int</span></span>
+         The flag to get. 0..7
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        returns the flag value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.clear_talk_flag"></a>
+    <strong>Actor.clear_talk_flag (actor, flag)</strong>
+    </dt>
+    <dd>
+    Clear one of the actor&rsquo;s talk flags
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">flag</span>
+            <span class="types"><span class="type">int</span></span>
+         The flag to clear. 0..7
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_number_of_schedules"></a>
+    <strong>Actor.get_number_of_schedules (actor)</strong>
+    </dt>
+    <dd>
+    Get the number of schedule entries
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_schedule"></a>
+    <strong>Actor.get_schedule (actor, index)</strong>
+    </dt>
+    <dd>
+    Get an Actor schedule entry
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">int</span></span>
+         The index of the schedule to retrieve
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Schedule">Schedule</a></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
