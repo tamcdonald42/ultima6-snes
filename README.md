@@ -63,16 +63,20 @@ Super Nintendo (SNES) using **PVSnesLib**.
      terrain (grass, river, roads, Britain's buildings) matching the original.
 
 ## Project Structure
-- `U6/` - Original PC game asset files (`MAP`, `CHUNKS`, `MAPTILES.VGA`, `U6PAL`, etc.)
-- `nuvie/` - Nuvie engine source code (reference; ScummVM handoff commit)
-- `src/` - Engine source (`main.c`, `data.asm`, `hdr.asm`) + converted assets
+- `U6/` - **NOT included in this repo** (copyrighted game data). Copy your own
+  Ultima VI (DOS) game files here: `MAP`, `CHUNKS`, `MAPTILES.VGA`, `TILEINDX.VGA`,
+  `OBJTILES.VGA`, `MASKTYPE.VGA`, `U6PAL`, `TILEFLAG`, `BASETILE`
+- `nuvie/` - Nuvie engine source code (GPLv2; reference only, ScummVM handoff commit)
+- `src/` - Engine source (`main.c`, `data.asm`, `hdr.asm`) + converted assets (generated)
 - `tools/` - `convert_u6.py` (LZW-corrected converter), `u6lzw.py` (LZW decoder),
   `extract_u6.py` (file scanner), `convert_assets.py` (framework stub)
 - `build.py` - Python build script (path-independent: works from D:\ or C:\)
-- `ultima6_snes.sfc` - Compiled SNES ROM (LoROM, 256KB) for Mesen-S / bsnes / FXPak Pro
+- `ultima6_snes.sfc` - Compiled SNES ROM (LoROM, 256KB; generated locally, not committed)
 
 ## How to Rebuild
 ```bash
+# 1. Copy your Ultima VI DOS game files into U6/ (see above)
+# 2. Requires PVSnesLib (D:\pvsneslib or in PATH) + Python 3
 python build.py
 ```
 
