@@ -451,6 +451,7 @@ def build_assets():
     # sorted by (ly, lx) for binary search; only superchunks with objects appear.
     omb = bytearray()
     index = bytearray(64 * 4)   # u32 offset per superchunk (0 = none)
+    blocks = []                 # (off, len) of each superchunk block IN ORDER
     for sy in range(8):
         for sx in range(8):
             sc = overlays.get((sx, sy), {})
@@ -458,20 +459,39 @@ def build_assets():
                 continue
             struct.pack_into("<I", index, (sy * 8 + sx) * 4, len(omb))
             items = sorted(sc.items(), key=lambda kv: (kv[0][1] << 7) | kv[0][0])
+            blocks.append((len(omb), 2 + len(items) * 5))
             omb += struct.pack("<H", len(items))
             for (lx, ly), (cid, coll) in items:
                 omb += struct.pack("<BBHB", lx, ly, cid + COMP_OFFSET, coll)
+    # Split at a BLOCK boundary near 32KB (LoROM bank window): no block may
+    # straddle the a/b split, or main.c's binary search runs off the end of
+    # the objmap_a section into unrelated ROM. objmap_a is zero-padded to a
+    # full 32768 so its section size is unambiguous.
+    split = len(omb)
+    for off, blen in blocks:
+        if off + blen > 32768:
+            split = off
+            break
+    # re-base offsets of blocks that land in the b side (off >= split):
+    # 32768 + (off - split) so main.c's `if off < 32768 ... else off-32768`
+    # resolves them into objmap_b correctly.
+    for i in range(64):
+        o = struct.unpack_from("<I", index, i * 4)[0]
+        if o >= split:
+            struct.pack_into("<I", index, i * 4, 32768 + (o - split))
+    omb_a = omb[:split] + b"\x00" * (32768 - split)
+    omb_b = omb[split:]
     with open(os.path.join(OUT_DIR, "objmap.bin"), "wb") as f:
         f.write(omb)
     with open(os.path.join(OUT_DIR, "objmap_idx.bin"), "wb") as f:
         f.write(index)
     # split objmap at 32KB (LoROM bank window) like chunks_a/b
     with open(os.path.join(OUT_DIR, "objmap_a.bin"), "wb") as f:
-        f.write(omb[:32768])
+        f.write(omb_a)
     with open(os.path.join(OUT_DIR, "objmap_b.bin"), "wb") as f:
-        f.write(omb[32768:])
+        f.write(omb_b)
     print(f"comptab: {len(comptab)} x 9B = {len(ctab)}B; objmap: {len(omb)}B "
-          f"(64 idx {len(index)}B)")
+          f"(a {len(omb_a)}B + b {len(omb_b)}B, split at block {split})")
     # constants for the ROM build: subtile counts + composite offset
     with open(os.path.join(OUT_DIR, "obj_constants.h"), "w") as f:
         f.write(f"#define N_TERRAIN_SUBTILES {n_terrain}\n")

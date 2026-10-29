@@ -48,9 +48,29 @@ extern char avatar_pal, avatar_pal_end;
 // Viewport map buffer: 2 SNES tiles per U6 tile, SC_32x32 layout
 static u16 viewport[32 * 28];
 
-// Object cache: subtile id (0..N_OBJ_SUBTILES-1) -> cache slot (0xFFFF = absent)
-static u16 obj_slot[N_OBJ_SUBTILES];
-static u16 slot_tick[OBJ_CACHE_SLOTS];   // last-use counter for LRU eviction
+/*-----------------------------------------------------------------------------
+    VRAM streaming cache.
+    Hardware-critical rules (learned the hard way - see M4 bugfix):
+    1. NEVER dmaCopyVram outside VBlank: the PPU reads VRAM during active
+       scanout; concurrent writes corrupt the displayed tile data. All cache
+       uploads are QUEUED during render and flushed inside the VBlank window.
+    2. NEVER evict a slot referenced by the current viewport map: the stale
+       map entry would show the wrong tile until the next render. Eviction
+       victims are chosen only among slots NOT marked in-use this frame.
+    3. Keep the reverse map slot_id[] so an evicted slot can release its
+       obj_slot entry (otherwise the old id keeps pointing at the recycled
+       slot and renders garbage).
+-----------------------------------------------------------------------------*/
+#define CACHE_MAX_PENDING 1024
+
+static u16 obj_slot[N_OBJ_SUBTILES];        // obj subtile id -> cache slot (0xFFFF absent)
+static u16 slot_id[OBJ_CACHE_SLOTS];        // slot -> obj subtile id (0xFFFF free)
+static u16 slot_tick[OBJ_CACHE_SLOTS];      // last-use counter for LRU eviction
+static u8  slot_inuse[OBJ_CACHE_SLOTS];     // referenced by current frame's map
+
+static u16 pending_id[CACHE_MAX_PENDING];   // queued uploads (obj subtile ids)
+static u16 pending_slot[CACHE_MAX_PENDING];
+static u16 n_pending = 0;
 static u16 tick = 1;
 
 static void tick_bump(u16 slot)
@@ -205,9 +225,10 @@ static const u8 *subtile_ptr(u16 id)
 
 /*-----------------------------------------------------------------------------
     cache_get(id): ensure subtile id is in the VRAM cache; return its VRAM
-    tile number. Uploads on miss, evicts LRU slot when the cache is full.
-    Uploads happen immediately (DMA outside VBlank is safe for VRAM writes
-    that are not visible this frame - new tiles are not yet in the map).
+    tile number. On a miss, a slot is assigned and the upload QUEUED (the DMA
+    itself happens in flush_cache() inside VBlank - never touch VRAM outside
+    VBlank). Eviction picks a free slot, else the LRU slot that is NOT marked
+    in-use by the current frame's viewport map.
 -----------------------------------------------------------------------------*/
 static u16 cache_get(u16 id)
 {
@@ -216,29 +237,79 @@ static u16 cache_get(u16 id)
 
     u16 oid = id - N_TERRAIN_SUBTILES;
     if (obj_slot[oid] != 0xFFFF) {
-        tick_bump(obj_slot[oid]);
-        return OBJ_CACHE_TILE + obj_slot[oid];
+        u16 s = obj_slot[oid];
+        slot_inuse[s] = 1;
+        tick_bump(s);
+        return OBJ_CACHE_TILE + s;
     }
 
-    // find a slot: any never-used slot (0xFFFF), else LRU (min tick)
+    // find a slot: any free slot, else LRU among slots NOT in use this frame
     u16 slot = 0xFFFF;
     u16 min_tick = 0xFFFF;
     u16 i;
     for (i = 0; i < OBJ_CACHE_SLOTS; i++) {
-        if (slot_tick[i] == 0xFFFF) { slot = i; break; }
+        if (slot_id[i] == 0xFFFF) { slot = i; break; }
     }
+    if (slot == 0xFFFF) {
+        for (i = 0; i < OBJ_CACHE_SLOTS; i++) {
+            if (!slot_inuse[i] && slot_tick[i] < min_tick) {
+                min_tick = slot_tick[i];
+                slot = i;
+            }
+        }
+    }
+    // defensive: if ALL slots are in use, evict LRU anyway (avoid stall)
     if (slot == 0xFFFF) {
         for (i = 0; i < OBJ_CACHE_SLOTS; i++) {
             if (slot_tick[i] < min_tick) { min_tick = slot_tick[i]; slot = i; }
         }
     }
 
-    // upload the subtile into VRAM cache slot
-    u16 vram_addr = OBJ_CACHE_BASE + slot * 32;
-    dmaCopyVram((u8 *)subtile_ptr(id), vram_addr, 32);
+    // release the previous occupant of this slot
+    if (slot_id[slot] != 0xFFFF)
+        obj_slot[slot_id[slot]] = 0xFFFF;
+
     obj_slot[oid] = slot;
+    slot_id[slot] = oid;
+    slot_inuse[slot] = 1;
     tick_bump(slot);
+    pending_id[n_pending] = oid;
+    pending_slot[n_pending] = slot;
+    n_pending++;
     return OBJ_CACHE_TILE + slot;
+}
+
+/*-----------------------------------------------------------------------------
+    flush_cache(): DMA queued uploads into VRAM, at most 1024 bytes per VBlank
+    (a single VBlank can only absorb ~1-2KB of VRAM DMA; overrunning corrupts
+    active scanout again). MUST run inside VBlank. Returns 1 when drained,
+    0 when more uploads remain for the next VBlank.
+-----------------------------------------------------------------------------*/
+#define CACHE_VBLANK_BUDGET 1024
+
+static u8 flush_cache(void)
+{
+    u16 budget = CACHE_VBLANK_BUDGET;
+    while (n_pending > 0 && budget >= 32) {
+        n_pending--;
+        u16 oid = pending_id[n_pending];
+        u16 slot = pending_slot[n_pending];
+        u16 vram_addr = OBJ_CACHE_BASE + slot * 32;
+        dmaCopyVram((u8 *)subtile_ptr(oid + N_TERRAIN_SUBTILES), vram_addr, 32);
+        budget -= 32;
+    }
+    return n_pending == 0;
+}
+
+/*-----------------------------------------------------------------------------
+    sync_cache(): WaitForVBlank + flush until drained, then the caller DMAs
+    the viewport map. Blocks across a few frames on big loads (superchunk
+    crossings) — acceptable; the alternative (overrunning VBlank) corrupts.
+-----------------------------------------------------------------------------*/
+static void sync_cache(void)
+{
+    while (!flush_cache())
+        WaitForVBlank();
 }
 
 /*-----------------------------------------------------------------------------
@@ -250,6 +321,9 @@ static u16 cache_get(u16 id)
 static void render_viewport(void)
 {
     u16 vx, vy;
+    u16 i;
+    for (i = 0; i < OBJ_CACHE_SLOTS; i++)
+        slot_inuse[i] = 0;   // fresh frame: nothing in use yet
 
     for (vy = 0; vy < VIEW_H; vy++) {
         for (vx = 0; vx < VIEW_W; vx++) {
@@ -321,11 +395,15 @@ int main(void)
                   &avatar_pal, (&avatar_pal_end - &avatar_pal),
                   0, 0x0000, OBJ_SIZE16_L32);
 
-    // Object cache starts empty (0xFFFF = slot never used)
+    // Object cache starts empty (0xFFFF = free slot / no mapping)
     for (i = 0; i < N_OBJ_SUBTILES; i++)
         obj_slot[i] = 0xFFFF;
-    for (i = 0; i < OBJ_CACHE_SLOTS; i++)
+    for (i = 0; i < OBJ_CACHE_SLOTS; i++) {
+        slot_id[i] = 0xFFFF;
         slot_tick[i] = 0xFFFF;
+        slot_inuse[i] = 0;
+    }
+    n_pending = 0;
 
     // Mode 1 (16 colors), only layer 0 active
     setMode(BG_MODE1, 0);
@@ -337,6 +415,7 @@ int main(void)
     cam_x = (av_x - 8) & 1023;
     cam_y = (av_y - 7) & 1023;
     render_viewport();
+    sync_cache();                        // upload queued object tiles, in VBlank
     WaitForVBlank();
     dmaCopyVram((u8 *)viewport, 0xA000, 32 * 28 * 2);
     update_avatar_sprite();
@@ -367,6 +446,7 @@ int main(void)
                     cam_x = (av_x - 8) & 1023;
                     cam_y = (av_y - 7) & 1023;
                     render_viewport();
+                    sync_cache();        // upload queued object tiles, in VBlank
                     WaitForVBlank();
                     dmaCopyVram((u8 *)viewport, 0xA000, 32 * 28 * 2);
                     update_avatar_sprite();
