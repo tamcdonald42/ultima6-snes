@@ -302,12 +302,17 @@ static u8 flush_cache(void)
 }
 
 /*-----------------------------------------------------------------------------
-    sync_cache(): WaitForVBlank + flush until drained, then the caller DMAs
-    the viewport map. Blocks across a few frames on big loads (superchunk
-    crossings) — acceptable; the alternative (overrunning VBlank) corrupts.
------------------------------------------------------------------------------*/
+    sync_cache(): DMA queued uploads into VRAM. MUST be called while the
+    screen is between VBlanks — uploads during active scanout corrupt the
+    pattern table (the M4 hardware bug this fixes). Budgets 1024 bytes per
+    VBlank, blocks across a few frames on big loads (superchunk crossings);
+    the caller then DMAs the viewport map in the same VBlank window.
+------------------------------------------------------------------------------*/
 static void sync_cache(void)
 {
+    if (n_pending == 0)
+        return;                   // nothing queued: caller's own VBlank suffices
+    WaitForVBlank();              // FIRST enter VBlank, then flush
     while (!flush_cache())
         WaitForVBlank();
 }
