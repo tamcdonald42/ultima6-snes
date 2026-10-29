@@ -1,8 +1,46 @@
-# Ultima VI: The False Prophet - SNES Port (Milestone 3: Walkable Britannia)
+# Ultima VI: The False Prophet - SNES Port (Milestone 4: Walkable Britannia with Objects)
 
 This repository contains the development environment, asset conversion pipeline, and
 prototype engine for porting **Ultima VI: The False Prophet** (PC/DOS) to the
 Super Nintendo (SNES) using **PVSnesLib**.
+
+## Milestone 4 Accomplishments
+
+1. **Object layer (LZOBJBLK)** - All 7,974 on-map objects (trees, rocks, furniture,
+   barrels, crates, ladders, building interiors, NPC bases) parsed from the
+   LZW-compressed `U6/LZOBJBLK` (64 superchunks in the 2x2-interleaved file order:
+   `sx = 2*((k>>2)&3) + (k&1)`, `sy = 2*(k>>4) + ((k>>1)&1)`; 8-byte records:
+   status, packed 10-bit x/y/z, 10-bit obj_n + 6-bit frame_n, qty, quality —
+   byte-exact NuVIE `loadObj` semantics).
+
+2. **Composite baking** - The SNES BG layer has no per-pixel transparency, so each
+   covered position is baked at convert time: terrain tile + object tile stack
+   (bottom->top draw order, dbl_width/dbl_height expansions using tile-1/tile-2/
+   tile-3 like NuVIE drawTile), deduped into the global subtile pool. 2,541 unique
+   composites across the world. Emitted as `src/comptab.bin`
+   (2541 x [pal u8 + 4x subtile u16]).
+
+3. **Per-superchunk object map** - `src/objmap.bin` (36.7KB, split into two 32KB
+   LoROM sections) + `src/objmap_idx.bin` (64 x u32 offsets). Each superchunk holds
+   a sorted list of `[lx u8, ly u8, composite_id+2048 u16, collision u8]` for binary
+   search at runtime. Composite IDs are offset by 2048 so one u16 distinguishes
+   terrain tile from composite.
+
+4. **VRAM tile streaming** - The baked world is 5,721 unique subtiles (183KB), far
+   more than 64KB VRAM. Terrain subtiles (750) stay resident at 0x4000; the 4,971
+   object subtiles live in 5 ROM banks and stream into a 704-slot LRU cache at
+   VRAM 0xA800 on demand (visible viewport needs at most ~328 unique subtiles).
+   ROM grew to 512KB LoROM (ROMSIZE $09, 16 banks).
+
+5. **Object collision** - `passable()` now checks terrain TILEFLAG AND the object
+   map: 654 object-blocked tiles on passable terrain around Britain alone (walls,
+   furniture, trees block movement exactly like NuVIE is_passable).
+
+6. **Verified** - Python simulator renders the ROM's own bytes (sim_m4_rom.py):
+   the ROM output is pixel-identical to the converter's asset files at all test
+   positions; interiors show correct furniture (beds, chests, tables, barrels,
+   crates, ladders); object collision verified (e.g. (323,322) is terrain-passable
+   but composite-blocked).
 
 ## Milestone 3 Accomplishments
 
@@ -65,13 +103,13 @@ Super Nintendo (SNES) using **PVSnesLib**.
 ## Project Structure
 - `U6/` - **NOT included in this repo** (copyrighted game data). Copy your own
   Ultima VI (DOS) game files here: `MAP`, `CHUNKS`, `MAPTILES.VGA`, `TILEINDX.VGA`,
-  `OBJTILES.VGA`, `MASKTYPE.VGA`, `U6PAL`, `TILEFLAG`, `BASETILE`
+  `OBJTILES.VGA`, `MASKTYPE.VGA`, `U6PAL`, `TILEFLAG`, `BASETILE`, `LZOBJBLK`
 - `nuvie/` - Nuvie engine source code (GPLv2; reference only, ScummVM handoff commit)
 - `src/` - Engine source (`main.c`, `data.asm`, `hdr.asm`) + converted assets (generated)
-- `tools/` - `convert_u6.py` (LZW-corrected converter), `u6lzw.py` (LZW decoder),
-  `extract_u6.py` (file scanner), `convert_assets.py` (framework stub)
+- `tools/` - `convert_u6.py` (LZW-corrected converter incl. object layer), `u6lzw.py`
+  (LZW decoder), `extract_u6.py` (file scanner), `convert_assets.py` (framework stub)
 - `build.py` - Python build script (path-independent: works from D:\ or C:\)
-- `ultima6_snes.sfc` - Compiled SNES ROM (LoROM, 256KB; generated locally, not committed)
+- `ultima6_snes.sfc` - Compiled SNES ROM (LoROM, 512KB; generated locally, not committed)
 
 ## How to Rebuild
 ```bash
@@ -82,7 +120,6 @@ python build.py
 
 ## Next Milestones (suggested)
 - Animated water / ANIMDATA overlay on the black river-base tiles
-- Object layer (OBJBLK) for trees, buildings' interior objects, NPCs
-- Avatar sprite + movement with collision (TILEFLAG)
-- Dungeon levels (MAP dungeon superchunks, 256x256)
+- Dungeon levels (MAP dungeon superchunks, 256x256) - same LZOBJBLK pipeline
+- NPCs with schedules / actor system (actor positions in LZOBJBLK)
 - Conversation system (CONVERSE.A/B), look/use via TILEFLAG + usecode

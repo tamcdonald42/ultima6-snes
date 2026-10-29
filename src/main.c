@@ -1,22 +1,33 @@
 /*---------------------------------------------------------------------------------
-    Ultima VI SNES Port - Walkable Britannia
-    Milestone 3: avatar sprite + TILEFLAG collision on the real world map.
-    - Decodes MAP + CHUNKS at runtime (NuVIE Map.cpp semantics)
-    - Avatar walks 4 directions with walk animation, blocked by impassable/water
-    - Camera follows the avatar, viewport re-renders + DMA'd on every step
+    Ultima VI SNES Port - Walkable Britannia with Objects
+    Milestone 4: object layer (LZOBJBLK) - trees, buildings, furniture, NPCs.
+    - Terrain subtiles (750) resident in VRAM at boot
+    - Object/composite subtiles (4971) streamed into a 704-slot VRAM cache (LRU)
+    - Per-superchunk object overlay (objmap): composite lookup + collision
+    - Objects baked over terrain at convert time (SNES BG has no transparency),
+      so each visible position renders either its terrain tile or a composite
 ---------------------------------------------------------------------------------*/
 
 #include <snes.h>
 
-extern char patterns, patterns_end;
+extern char patterns, patterns_end;            // 750 terrain subtiles (24KB)
+extern char obj_pic_0, obj_pic_0_end;          // object subtile banks (5 x <=32KB)
+extern char obj_pic_1, obj_pic_1_end;
+extern char obj_pic_2, obj_pic_2_end;
+extern char obj_pic_3, obj_pic_3_end;
+extern char obj_pic_4, obj_pic_4_end;
 extern char palette, palette_end;
-extern char tilemap, tilemap_end;
+extern char tilemap, tilemap_end;              // 2048 x [pal + 4 subtile ids]
+extern char comptab, comptab_end;              // 2541 x [pal + 4 subtile ids]
+extern char objmap_a, objmap_a_end;            // overlay data (split 32KB)
+extern char objmap_b, objmap_b_end;
+extern char objmap_idx, objmap_idx_end;        // 64 x u32 offsets
 extern char map_data, map_data_end;
-extern char chunk_data_a, chunk_data_a_end;   // CHUNKS bytes 0..32767
-extern char chunk_data_b, chunk_data_b_end;   // CHUNKS bytes 32768..65535
-extern char tileflag, tileflag_end;           // 2048 collision flags
-extern char avatar_gfx, avatar_gfx_end;       // 64 8x8 tiles (16 frames)
-extern char avatar_pal, avatar_pal_end;       // 16 colors
+extern char chunk_data_a, chunk_data_a_end;    // CHUNKS bytes 0..32767
+extern char chunk_data_b, chunk_data_b_end;    // CHUNKS bytes 32768..65535
+extern char tileflag, tileflag_end;            // 2048 collision flags
+extern char avatar_gfx, avatar_gfx_end;
+extern char avatar_pal, avatar_pal_end;
 
 #define WORLD_W 1024
 #define WORLD_H 1024
@@ -24,8 +35,30 @@ extern char avatar_pal, avatar_pal_end;       // 16 colors
 #define VIEW_W 16      // U6 tiles visible horizontally (16 * 16px = 256px)
 #define VIEW_H 14      // U6 tiles visible vertically (14 * 16px = 224px)
 
+#define N_TERRAIN_SUBTILES 750
+#define N_OBJ_SUBTILES 4971
+#define COMP_OFFSET 2048
+
+// VRAM layout: 0x0000 avatar sprite, 0x4000 terrain patterns, 0xA000 map,
+// 0xA800..0xFFFF object cache (704 slots x 32B = 22528B)
+#define OBJ_CACHE_SLOTS 704
+#define OBJ_CACHE_BASE 0xA800
+#define OBJ_CACHE_TILE (OBJ_CACHE_BASE / 32)
+
 // Viewport map buffer: 2 SNES tiles per U6 tile, SC_32x32 layout
 static u16 viewport[32 * 28];
+
+// Object cache: subtile id (0..N_OBJ_SUBTILES-1) -> cache slot (0xFFFF = absent)
+static u16 obj_slot[N_OBJ_SUBTILES];
+static u16 slot_tick[OBJ_CACHE_SLOTS];   // last-use counter for LRU eviction
+static u16 tick = 1;
+
+static void tick_bump(u16 slot)
+{
+    slot_tick[slot] = tick;
+    if (tick < 0xFFFE)          // saturate so it never hits the 0xFFFF marker
+        tick++;
+}
 
 // Camera position in world U6-tile coordinates (wraps at 1024); top-left corner
 static u16 cam_x = 320;
@@ -72,19 +105,147 @@ static u8 world_tile(u16 wx, u16 wy)
 }
 
 /*-----------------------------------------------------------------------------
+    obj_at(wx, wy): binary search the superchunk's overlay for a position.
+    Returns the composite id + COMP_OFFSET (>= 2048) plus collision flags,
+    or 0xFFFF if no object covers this position.
+-----------------------------------------------------------------------------*/
+static u16 obj_at(u16 wx, u16 wy)
+{
+    u8 sx = (wx >> 7) & 7;
+    u8 sy = (wy >> 7) & 7;
+    const u8 *idx = (const u8 *)&objmap_idx + (sy * 8 + sx) * 4;
+    u32 off = idx[0] | (idx[1] << 8) | (idx[2] << 16) | (idx[3] << 24);
+    if (off == 0)
+        return 0xFFFF;
+
+    const u8 *base = (off < 32768) ? (const u8 *)&objmap_a : (const u8 *)&objmap_b;
+    u16 loff = (off < 32768) ? off : off - 32768;
+
+    u16 n = base[loff] | (base[loff + 1] << 8);
+    u16 key = ((wy & 127) << 7) | (wx & 127);
+    u16 lo = 0, hi = n - 1;
+    loff += 2;
+    while (lo <= hi) {
+        u16 mid = (lo + hi) >> 1;
+        const u8 *e = base + loff + mid * 5;
+        u16 ek = (e[1] << 7) | e[0];
+        if (ek < key)
+            lo = mid + 1;
+        else if (ek > key)
+            hi = mid - 1;
+        else
+            return e[2] | (e[3] << 8);   // composite id + COMP_OFFSET
+    }
+    return 0xFFFF;
+}
+
+/*-----------------------------------------------------------------------------
+    obj_coll(wx, wy): collision flags (bit0 water, bit1 impassable) of the
+    object covering a position, or 0 if none.
+-----------------------------------------------------------------------------*/
+static u8 obj_coll(u16 wx, u16 wy)
+{
+    u8 sx = (wx >> 7) & 7;
+    u8 sy = (wy >> 7) & 7;
+    const u8 *idx = (const u8 *)&objmap_idx + (sy * 8 + sx) * 4;
+    u32 off = idx[0] | (idx[1] << 8) | (idx[2] << 16) | (idx[3] << 24);
+    if (off == 0)
+        return 0;
+
+    const u8 *base = (off < 32768) ? (const u8 *)&objmap_a : (const u8 *)&objmap_b;
+    u16 loff = (off < 32768) ? off : off - 32768;
+
+    u16 n = base[loff] | (base[loff + 1] << 8);
+    u16 key = ((wy & 127) << 7) | (wx & 127);
+    u16 lo = 0, hi = n - 1;
+    loff += 2;
+    while (lo <= hi) {
+        u16 mid = (lo + hi) >> 1;
+        const u8 *e = base + loff + mid * 5;
+        u16 ek = (e[1] << 7) | e[0];
+        if (ek < key)
+            lo = mid + 1;
+        else if (ek > key)
+            hi = mid - 1;
+        else
+            return e[4];
+    }
+    return 0;
+}
+
+/*-----------------------------------------------------------------------------
     passable(wx, wy): true when the avatar may enter this tile.
-    TILEFLAG flags1: bit0 = water, bit1 = impassable (NuVIE loadTileFlag).
+    Terrain TILEFLAG (bit0 water, bit1 impassable) AND object collision.
 -----------------------------------------------------------------------------*/
 static u8 passable(u16 wx, u16 wy)
 {
     u8 f = ((const u8 *)&tileflag)[world_tile(wx, wy)];
-    return (f & 0x03) == 0;
+    if (f & 0x03)
+        return 0;
+    return (obj_coll(wx, wy) & 0x03) == 0;
+}
+
+/*-----------------------------------------------------------------------------
+    subtile_ptr(id): pointer to subtile data in ROM (terrain resident banks +
+    object banks). id is a global subtile id 0..5720.
+-----------------------------------------------------------------------------*/
+static const u8 *subtile_ptr(u16 id)
+{
+    if (id < N_TERRAIN_SUBTILES)
+        return (const u8 *)&patterns + id * 32;
+    id -= N_TERRAIN_SUBTILES;
+    switch (id >> 10) {
+        case 0:  return (const u8 *)&obj_pic_0 + (id & 1023) * 32;
+        case 1:  return (const u8 *)&obj_pic_1 + (id & 1023) * 32;
+        case 2:  return (const u8 *)&obj_pic_2 + (id & 1023) * 32;
+        case 3:  return (const u8 *)&obj_pic_3 + (id & 1023) * 32;
+        default: return (const u8 *)&obj_pic_4 + (id & 1023) * 32;
+    }
+}
+
+/*-----------------------------------------------------------------------------
+    cache_get(id): ensure subtile id is in the VRAM cache; return its VRAM
+    tile number. Uploads on miss, evicts LRU slot when the cache is full.
+    Uploads happen immediately (DMA outside VBlank is safe for VRAM writes
+    that are not visible this frame - new tiles are not yet in the map).
+-----------------------------------------------------------------------------*/
+static u16 cache_get(u16 id)
+{
+    if (id < N_TERRAIN_SUBTILES)
+        return 512 + id;                     // resident at 0x4000 (tile 512+)
+
+    u16 oid = id - N_TERRAIN_SUBTILES;
+    if (obj_slot[oid] != 0xFFFF) {
+        tick_bump(obj_slot[oid]);
+        return OBJ_CACHE_TILE + obj_slot[oid];
+    }
+
+    // find a slot: any never-used slot (0xFFFF), else LRU (min tick)
+    u16 slot = 0xFFFF;
+    u16 min_tick = 0xFFFF;
+    u16 i;
+    for (i = 0; i < OBJ_CACHE_SLOTS; i++) {
+        if (slot_tick[i] == 0xFFFF) { slot = i; break; }
+    }
+    if (slot == 0xFFFF) {
+        for (i = 0; i < OBJ_CACHE_SLOTS; i++) {
+            if (slot_tick[i] < min_tick) { min_tick = slot_tick[i]; slot = i; }
+        }
+    }
+
+    // upload the subtile into VRAM cache slot
+    u16 vram_addr = OBJ_CACHE_BASE + slot * 32;
+    dmaCopyVram((u8 *)subtile_ptr(id), vram_addr, 32);
+    obj_slot[oid] = slot;
+    tick_bump(slot);
+    return OBJ_CACHE_TILE + slot;
 }
 
 /*-----------------------------------------------------------------------------
     render_viewport(): fill the viewport map buffer from world position.
-    Each U6 16x16 tile -> 2x2 SNES 8x8 tiles via the tilemap table.
-    Map entry = subtile id | (palette << 10).
+    Each U6 16x16 tile -> 2x2 SNES 8x8 tiles. Position with an object renders
+    the composite tile (terrain baked in); else the terrain tile.
+    Map entry = subtile VRAM tile | (palette << 10).
 -----------------------------------------------------------------------------*/
 static void render_viewport(void)
 {
@@ -95,21 +256,27 @@ static void render_viewport(void)
             u16 wx = (cam_x + vx) & 1023;
             u16 wy = (cam_y + vy) & 1023;
             u8 tile = world_tile(wx, wy);
+            u16 oid = obj_at(wx, wy);
 
-            const u8 *tm = (const u8 *)&tilemap + tile * 9;
+            const u8 *tm;
+            if (oid != 0xFFFF)
+                tm = (const u8 *)&comptab + (oid - COMP_OFFSET) * 9;
+            else
+                tm = (const u8 *)&tilemap + tile * 9;
+
             u8 pal = tm[0];
-            u16 e0 = tm[1] | (tm[2] << 8);
-            u16 e1 = tm[3] | (tm[4] << 8);
-            u16 e2 = tm[5] | (tm[6] << 8);
-            u16 e3 = tm[7] | (tm[8] << 8);
+            u16 id0 = tm[1] | (tm[2] << 8);
+            u16 id1 = tm[3] | (tm[4] << 8);
+            u16 id2 = tm[5] | (tm[6] << 8);
+            u16 id3 = tm[7] | (tm[8] << 8);
 
             u16 palbits = (u16)pal << 10;
             u32 base = (u32)(vy * 2) * 32 + vx * 2;
 
-            viewport[base] = e0 | palbits;
-            viewport[base + 1] = e1 | palbits;
-            viewport[base + 32] = e2 | palbits;
-            viewport[base + 33] = e3 | palbits;
+            viewport[base] = cache_get(id0) | palbits;
+            viewport[base + 1] = cache_get(id1) | palbits;
+            viewport[base + 32] = cache_get(id2) | palbits;
+            viewport[base + 33] = cache_get(id3) | palbits;
         }
     }
 }
@@ -139,8 +306,9 @@ static void update_avatar_sprite(void)
 int main(void)
 {
     u16 pad;
+    u16 i;
 
-    // Load tile graphics (4bpp) + 8x16-color palette into VRAM/CGRAM
+    // Terrain patterns (750 subtiles) + 8x16-color palette into VRAM/CGRAM
     bgInitTileSet(0, &patterns, &palette, 0,
                   (&patterns_end - &patterns), (&palette_end - &palette),
                   BG_16COLORS, 0x4000);
@@ -152,6 +320,12 @@ int main(void)
     oamInitGfxSet(&avatar_gfx, (&avatar_gfx_end - &avatar_gfx),
                   &avatar_pal, (&avatar_pal_end - &avatar_pal),
                   0, 0x0000, OBJ_SIZE16_L32);
+
+    // Object cache starts empty (0xFFFF = slot never used)
+    for (i = 0; i < N_OBJ_SUBTILES; i++)
+        obj_slot[i] = 0xFFFF;
+    for (i = 0; i < OBJ_CACHE_SLOTS; i++)
+        slot_tick[i] = 0xFFFF;
 
     // Mode 1 (16 colors), only layer 0 active
     setMode(BG_MODE1, 0);

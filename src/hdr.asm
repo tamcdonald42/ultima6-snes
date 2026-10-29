@@ -1,0 +1,44 @@
+;===================================================================================
+; hdr.asm - Ultima 6 SNES Port Header
+;===================================================================================
+
+.MEMORYMAP                 
+  SLOTSIZE $8000           
+  DEFAULTSLOT 0            
+  SLOT 0 $8000             
+  SLOT 1 $0 $2000          
+  SLOT 2 $2000 $E000            
+  SLOT 3 $0 $10000         
+.ENDME                     
+
+.ROMBANKSIZE $8000         
+.ROMBANKS 16
+
+.SNESHEADER
+  ID "SNES"
+  NAME "ULTIMA 6 SNES"
+  SLOWROM
+  LOROM
+  CARTRIDGETYPE $00        
+    ROMSIZE $09
+  SRAMSIZE $00
+  COUNTRY $01
+  LICENSEECODE $00
+  VERSION $00
+.ENDSNES
+
+.SNESNATIVEVECTOR          
+  COP EmptyHandler
+  BRK EmptyHandler
+  ABORT EmptyHandler       
+  NMI VBlank
+  IRQ EmptyHandler
+.ENDNATIVEVECTOR
+
+.SNESEMUVECTOR             
+  COP EmptyHandler
+  ABORT EmptyHandler       
+  NMI EmptyHandler
+  RESET tcc__start
+  IRQBRK EmptyHandler      
+.ENDEMUVECTOR
