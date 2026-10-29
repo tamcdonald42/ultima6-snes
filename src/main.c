@@ -39,11 +39,17 @@ extern char avatar_pal, avatar_pal_end;
 #define N_OBJ_SUBTILES 4971
 #define COMP_OFFSET 2048
 
-// VRAM layout: 0x0000 avatar sprite, 0x4000 terrain patterns, 0xA000 map,
-// 0xA800..0xFFFF object cache (704 slots x 32B = 22528B)
-#define OBJ_CACHE_SLOTS 704
-#define OBJ_CACHE_BASE 0xA800
-#define OBJ_CACHE_TILE (OBJ_CACHE_BASE / 32)
+// VRAM layout (ALL BG tile numbers must fit the 10-bit tilemap field, 0..1023):
+//   0x0000..0x5DC0 terrain patterns (750 subtiles -> tiles 0..749)
+//   0x5DC0..0x8000 object cache      (274 slots  -> tiles 750..1023)
+//   0x8000      avatar sprite gfx    (OBJ plane, own addressing)
+//   0xA000      viewport tilemap
+// Object-only working set is <=~100 unique subtiles per viewport, so 274
+// cache slots has 2x+ headroom; eviction stays for safety.
+#define OBJ_CACHE_SLOTS 274
+#define OBJ_CACHE_BASE 0x5DC0
+#define OBJ_CACHE_TILE (OBJ_CACHE_BASE / 32)   // 750
+#define TERRAIN_BASE_TILE 0                    // terrain id -> tile id (1:1)
 
 // Viewport map buffer: 2 SNES tiles per U6 tile, SC_32x32 layout
 static u16 viewport[32 * 28];
@@ -233,7 +239,7 @@ static const u8 *subtile_ptr(u16 id)
 static u16 cache_get(u16 id)
 {
     if (id < N_TERRAIN_SUBTILES)
-        return 512 + id;                     // resident at 0x4000 (tile 512+)
+        return TERRAIN_BASE_TILE + id;        // resident at 0x0000 (tile = id)
 
     u16 oid = id - N_TERRAIN_SUBTILES;
     if (obj_slot[oid] != 0xFFFF) {
@@ -387,18 +393,19 @@ int main(void)
     u16 pad;
     u16 i;
 
-    // Terrain patterns (750 subtiles) + 8x16-color palette into VRAM/CGRAM
+    // Terrain patterns (750 subtiles) at VRAM 0x0000: tile number == subtile
+    // id, so ALL map entries stay within the 10-bit tilemap field (0..1023).
     bgInitTileSet(0, &patterns, &palette, 0,
                   (&patterns_end - &patterns), (&palette_end - &palette),
-                  BG_16COLORS, 0x4000);
+                  BG_16COLORS, 0x0000);
 
     // Init background map on layer 0 at VRAM 0xA000
     bgInitMapSet(0, (u8 *)viewport, 2048, SC_32x32, 0xA000);
 
-    // Avatar sprite: 2KB gfx at VRAM 0x0000, palette at CGRAM 128
+    // Avatar sprite: 2KB gfx at VRAM 0x8000 (OBJSEL base value 2), pal at 128
     oamInitGfxSet(&avatar_gfx, (&avatar_gfx_end - &avatar_gfx),
                   &avatar_pal, (&avatar_pal_end - &avatar_pal),
-                  0, 0x0000, OBJ_SIZE16_L32);
+                  0, 0x8000, OBJ_SIZE16_L32);
 
     // Object cache starts empty (0xFFFF = free slot / no mapping)
     for (i = 0; i < N_OBJ_SUBTILES; i++)
